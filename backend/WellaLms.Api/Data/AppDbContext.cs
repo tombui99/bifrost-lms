@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WellaLms.Api.Core.Entities;
 
 namespace WellaLms.Api.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<ApplicationUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -16,6 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<TrainingProgram> TrainingPrograms { get; set; }
     public DbSet<FAQ> FAQs { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<StudentProgress> StudentProgresses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

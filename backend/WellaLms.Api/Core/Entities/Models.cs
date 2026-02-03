@@ -1,5 +1,13 @@
 namespace WellaLms.Api.Core.Entities;
 
+using Microsoft.AspNetCore.Identity;
+
+public class ApplicationUser : IdentityUser
+{
+    public string? FullName { get; set; }
+    public string? TenantId { get; set; } // For multi-tenancy if needed per user
+}
+
 public abstract class BaseEntity
 {
     public int Id { get; set; }
@@ -71,4 +79,14 @@ public class Notification : BaseEntity
     public string Message { get; set; } = default!;
     public bool IsRead { get; set; }
     public string? TargetUser { get; set; }
+}
+
+public class StudentProgress : BaseEntity
+{
+    public string StudentId { get; set; } = default!;
+    public ApplicationUser Student { get; set; } = default!;
+    public int CourseId { get; set; }
+    public Course Course { get; set; } = default!;
+    public int ProgressPercentage { get; set; }
+    public double Score { get; set; }
 }

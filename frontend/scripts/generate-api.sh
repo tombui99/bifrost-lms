@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-API_URL="http://localhost:5000/openapi/v1.json"
+API_URL="http://localhost:5186/openapi/v1.json"
 OUTPUT_DIR="src/app/api"
 
 echo "Generating API services from $API_URL..."
