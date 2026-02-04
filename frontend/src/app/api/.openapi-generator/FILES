@@ -1,11 +1,11 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 api.base.service.ts
 api.module.ts
 api/api.ts
 api/auth.service.ts
 api/courses.service.ts
+api/lessons.service.ts
 api/teacher.service.ts
 configuration.ts
 encoder.ts
@@ -14,6 +14,8 @@ index.ts
 model/apiCoursesIdGetIdParameter.ts
 model/applicationUser.ts
 model/course.ts
+model/createCourseDto.ts
+model/createLessonDto.ts
 model/lesson.ts
 model/loginDto.ts
 model/models.ts
@@ -21,6 +23,8 @@ model/registerDto.ts
 model/resource.ts
 model/studentProgress.ts
 model/studentProgressScore.ts
+model/updateCourseDto.ts
+model/updateLessonDto.ts
 param.ts
 provide-api.ts
 query.params.ts

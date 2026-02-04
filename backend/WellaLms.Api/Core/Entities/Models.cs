@@ -1,5 +1,6 @@
 namespace WellaLms.Api.Core.Entities;
 
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 
 public class ApplicationUser : IdentityUser
@@ -37,6 +38,7 @@ public class Lesson : BaseEntity
     public string Title { get; set; } = default!;
     public string? Content { get; set; }
     public int CourseId { get; set; }
+    [JsonIgnore]
     public Course Course { get; set; } = default!;
 }
 
