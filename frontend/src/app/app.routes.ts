@@ -25,6 +25,11 @@ export const routes: Routes = [
     canActivate: [authGuard, teacherGuard],
   },
   {
+    path: 'courses/:courseId/quiz/manage',
+    loadComponent: () => import('./quiz-edit/quiz-edit.component').then((m) => m.QuizEditComponent),
+    canActivate: [authGuard, teacherGuard],
+  },
+  {
     path: 'student/courses',
     loadComponent: () =>
       import('./student-courses/student-courses.component').then((m) => m.StudentCoursesComponent),
@@ -36,6 +41,12 @@ export const routes: Routes = [
       import('./student-course-detail/student-course-detail.component').then(
         (m) => m.StudentCourseDetailComponent,
       ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'student/courses/:courseId/quiz/:quizId',
+    loadComponent: () =>
+      import('./student-quiz/student-quiz.component').then((m) => m.StudentQuizComponent),
     canActivate: [authGuard],
   },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

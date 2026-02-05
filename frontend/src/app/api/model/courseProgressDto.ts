@@ -7,6 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { BatchUpdateChoiceDtoId } from './batchUpdateChoiceDtoId';
 import { ApiCoursesIdGetIdParameter } from './apiCoursesIdGetIdParameter';
 import { LessonProgressDto } from './lessonProgressDto';
 
@@ -16,6 +17,9 @@ export interface CourseProgressDto {
     courseTitle?: string;
     progressPercentage?: ApiCoursesIdGetIdParameter;
     isStarted?: boolean;
+    quizId?: BatchUpdateChoiceDtoId | null;
+    hasQuiz?: boolean;
+    isQuizPassed?: boolean;
     lessons?: Array<LessonProgressDto>;
 }
 

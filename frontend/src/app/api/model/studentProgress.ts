@@ -10,7 +10,7 @@
 import { ApplicationUser } from './applicationUser';
 import { ApiCoursesIdGetIdParameter } from './apiCoursesIdGetIdParameter';
 import { Course } from './course';
-import { StudentProgressScore } from './studentProgressScore';
+import { QuizResultDtoScore } from './quizResultDtoScore';
 
 
 export interface StudentProgress { 
@@ -19,7 +19,7 @@ export interface StudentProgress {
     courseId?: ApiCoursesIdGetIdParameter;
     course?: Course;
     progressPercentage?: ApiCoursesIdGetIdParameter;
-    score?: StudentProgressScore;
+    score?: QuizResultDtoScore;
     id?: ApiCoursesIdGetIdParameter;
     tenantId?: string | null;
     createdAt?: string;

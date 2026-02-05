@@ -278,6 +278,87 @@ import { NotificationService } from '../services/notification.service';
                 }
               </div>
             }
+
+            @if (courseProgress()?.hasQuiz) {
+              <div class="mt-12">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 px-2 flex items-center">
+                  <svg
+                    class="h-5 w-5 mr-2 text-indigo-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                    />
+                  </svg>
+                  Final Assessment
+                </h2>
+
+                <div
+                  class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div class="p-8 text-center">
+                    <div
+                      class="bg-indigo-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                    >
+                      <svg
+                        class="w-8 h-8 text-indigo-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                        />
+                      </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">
+                      {{ courseProgress()?.courseTitle }} Quiz
+                    </h3>
+                    <p class="text-gray-500 mb-8 max-w-sm mx-auto">
+                      Assess your knowledge and complete the course by passing this final quiz.
+                    </p>
+
+                    @if (courseProgress()?.isQuizPassed) {
+                      <div class="flex flex-col items-center">
+                        <div
+                          class="bg-green-100 text-green-700 px-6 py-3 rounded-xl font-bold flex items-center mb-4"
+                        >
+                          <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fill-rule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                          Quiz Passed
+                        </div>
+                        <button
+                          (click)="takeQuiz()"
+                          class="text-indigo-600 hover:text-indigo-800 font-bold text-sm"
+                        >
+                          Retake Quiz
+                        </button>
+                      </div>
+                    } @else {
+                      <button
+                        (click)="takeQuiz()"
+                        class="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all transform hover:scale-105 active:scale-95"
+                      >
+                        Start Final Quiz
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
           </div>
         }
       </div>
@@ -393,5 +474,12 @@ export class StudentCourseDetailComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/student/courses']);
+  }
+
+  takeQuiz() {
+    const progress = this.courseProgress();
+    if (progress && progress.quizId) {
+      this.router.navigate(['/student/courses', this.courseId, 'quiz', progress.quizId]);
+    }
   }
 }

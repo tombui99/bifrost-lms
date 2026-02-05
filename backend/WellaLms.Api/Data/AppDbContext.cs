@@ -19,6 +19,10 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<StudentProgress> StudentProgresses { get; set; }
     public DbSet<LessonProgress> LessonProgresses { get; set; }
+    public DbSet<Quiz> Quizzes { get; set; }
+    public DbSet<Question> Questions { get; set; }
+    public DbSet<Choice> Choices { get; set; }
+    public DbSet<QuizAttempt> QuizAttempts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

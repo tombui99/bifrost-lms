@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 using WellaLms.Api.Core.Entities;
+using WellaLms.Api.Core.Services;
 using WellaLms.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")!));
+
+builder.Services.AddScoped<IProgressService, ProgressService>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()

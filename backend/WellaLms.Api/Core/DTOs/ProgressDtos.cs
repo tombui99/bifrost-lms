@@ -14,6 +14,9 @@ public class CourseProgressDto
     public string CourseTitle { get; set; } = default!;
     public int ProgressPercentage { get; set; }
     public bool IsStarted { get; set; }
+    public int? QuizId { get; set; }
+    public bool HasQuiz { get; set; }
+    public bool IsQuizPassed { get; set; }
     public List<LessonProgressDto> Lessons { get; set; } = new();
 }
 

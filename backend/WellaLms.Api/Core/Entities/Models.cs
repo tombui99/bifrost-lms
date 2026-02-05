@@ -103,3 +103,41 @@ public class LessonProgress : BaseEntity
     public DateTime? CompletedAt { get; set; }
 }
 
+public class Quiz : BaseEntity
+{
+    public int CourseId { get; set; }
+    public Course Course { get; set; } = default!;
+    public string Title { get; set; } = default!;
+    public string? Description { get; set; }
+    public List<Question> Questions { get; set; } = new();
+}
+
+public class Question : BaseEntity
+{
+    public int QuizId { get; set; }
+    [JsonIgnore]
+    public Quiz Quiz { get; set; } = default!;
+    public string Text { get; set; } = default!;
+    public List<Choice> Choices { get; set; } = new();
+}
+
+public class Choice : BaseEntity
+{
+    public int QuestionId { get; set; }
+    [JsonIgnore]
+    public Question Question { get; set; } = default!;
+    public string Text { get; set; } = default!;
+    public bool IsCorrect { get; set; }
+}
+
+public class QuizAttempt : BaseEntity
+{
+    public string StudentId { get; set; } = default!;
+    public ApplicationUser Student { get; set; } = default!;
+    public int QuizId { get; set; }
+    public Quiz Quiz { get; set; } = default!;
+    public double Score { get; set; }
+    public bool IsPassed { get; set; }
+    public DateTime CompletedAt { get; set; } = DateTime.UtcNow;
+}
+

@@ -20,6 +20,12 @@ import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 import { ApiCoursesIdGetIdParameter } from '../model/apiCoursesIdGetIdParameter';
 // @ts-ignore
 import { CourseProgressDto } from '../model/courseProgressDto';
+// @ts-ignore
+import { QuizDto } from '../model/quizDto';
+// @ts-ignore
+import { QuizResultDto } from '../model/quizResultDto';
+// @ts-ignore
+import { QuizSubmissionDto } from '../model/quizSubmissionDto';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -245,6 +251,136 @@ export class StudentProgressService extends BaseService {
         return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @endpoint get /api/StudentProgress/quiz/{quizId}
+     * @param quizId 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public apiStudentProgressQuizQuizIdGet(quizId: ApiCoursesIdGetIdParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<QuizDto>;
+    public apiStudentProgressQuizQuizIdGet(quizId: ApiCoursesIdGetIdParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<QuizDto>>;
+    public apiStudentProgressQuizQuizIdGet(quizId: ApiCoursesIdGetIdParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<QuizDto>>;
+    public apiStudentProgressQuizQuizIdGet(quizId: ApiCoursesIdGetIdParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (quizId === null || quizId === undefined) {
+            throw new Error('Required parameter quizId was null or undefined when calling apiStudentProgressQuizQuizIdGet.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'text/plain',
+            'application/json',
+            'text/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/StudentProgress/quiz/${this.configuration.encodeParam({name: "quizId", value: quizId, in: "path", style: "simple", explode: false, dataType: "ApiCoursesIdGetIdParameter", dataFormat: "int32"})}`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<QuizDto>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @endpoint post /api/StudentProgress/quiz/{quizId}/submit
+     * @param quizId 
+     * @param quizSubmissionDto 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public apiStudentProgressQuizQuizIdSubmitPost(quizId: ApiCoursesIdGetIdParameter, quizSubmissionDto: QuizSubmissionDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<QuizResultDto>;
+    public apiStudentProgressQuizQuizIdSubmitPost(quizId: ApiCoursesIdGetIdParameter, quizSubmissionDto: QuizSubmissionDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<QuizResultDto>>;
+    public apiStudentProgressQuizQuizIdSubmitPost(quizId: ApiCoursesIdGetIdParameter, quizSubmissionDto: QuizSubmissionDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<QuizResultDto>>;
+    public apiStudentProgressQuizQuizIdSubmitPost(quizId: ApiCoursesIdGetIdParameter, quizSubmissionDto: QuizSubmissionDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (quizId === null || quizId === undefined) {
+            throw new Error('Required parameter quizId was null or undefined when calling apiStudentProgressQuizQuizIdSubmitPost.');
+        }
+        if (quizSubmissionDto === null || quizSubmissionDto === undefined) {
+            throw new Error('Required parameter quizSubmissionDto was null or undefined when calling apiStudentProgressQuizQuizIdSubmitPost.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'text/plain',
+            'application/json',
+            'text/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'text/json',
+            'application/*+json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/StudentProgress/quiz/${this.configuration.encodeParam({name: "quizId", value: quizId, in: "path", style: "simple", explode: false, dataType: "ApiCoursesIdGetIdParameter", dataFormat: "int32"})}/submit`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<QuizResultDto>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: quizSubmissionDto,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,

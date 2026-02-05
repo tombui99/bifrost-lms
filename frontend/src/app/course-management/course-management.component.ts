@@ -256,6 +256,38 @@ interface CourseFormData {
                         } @else {
                           <p class="text-sm text-gray-500 italic">No lessons in this course yet.</p>
                         }
+
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                          <div class="flex justify-between items-center">
+                            <div>
+                              <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider">
+                                Course Quiz
+                              </h4>
+                              <p class="text-xs text-gray-500 mt-1">
+                                Final assessment for the course
+                              </p>
+                            </div>
+                            <button
+                              (click)="manageQuiz(course.id!)"
+                              class="px-4 py-2 bg-indigo-50 text-indigo-700 text-sm font-bold rounded-lg hover:bg-indigo-100 transition-colors flex items-center space-x-2"
+                            >
+                              <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                                />
+                              </svg>
+                              <span>Manage Quiz</span>
+                            </button>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   }
@@ -582,6 +614,10 @@ export class CourseManagementComponent implements OnInit {
 
   editLesson(courseId: any, lessonId: any) {
     this.router.navigate(['/courses', courseId, 'lessons', lessonId, 'edit']);
+  }
+
+  manageQuiz(courseId: any) {
+    this.router.navigate(['/courses', courseId, 'quiz', 'manage']);
   }
 
   openDeleteLessonModal(lesson: Lesson) {
