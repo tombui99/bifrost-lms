@@ -507,6 +507,8 @@ export class LessonEditComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/courses/manage']);
+    this.router.navigate(['/courses/manage'], {
+      queryParams: { expanded: this.courseId() },
+    });
   }
 }

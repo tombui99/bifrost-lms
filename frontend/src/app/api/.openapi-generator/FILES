@@ -15,7 +15,6 @@ git_push.sh
 index.ts
 model/apiCoursesIdGetIdParameter.ts
 model/apiLessonsIdUploadPostRequestAllOfLength.ts
-model/applicationUser.ts
 model/batchUpdateChoiceDto.ts
 model/batchUpdateChoiceDtoId.ts
 model/batchUpdateQuestionDto.ts
@@ -40,7 +39,8 @@ model/quizResultDtoScore.ts
 model/quizSubmissionDto.ts
 model/registerDto.ts
 model/resource.ts
-model/studentProgress.ts
+model/teacherQuizAttemptDto.ts
+model/teacherStudentProgressDto.ts
 model/updateCourseDto.ts
 model/updateLessonDto.ts
 param.ts

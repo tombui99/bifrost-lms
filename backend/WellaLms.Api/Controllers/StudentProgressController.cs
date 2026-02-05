@@ -175,6 +175,9 @@ public class StudentProgressController : ControllerBase
             };
             _context.StudentProgresses.Add(progress);
             await _context.SaveChangesAsync();
+            
+            // Recalculate in case there's already lesson progress
+            await _progressService.UpdateStudentProgressAsync(userId, courseId);
         }
 
         return Ok();
@@ -192,6 +195,14 @@ public class StudentProgressController : ControllerBase
             .FirstOrDefaultAsync(l => l.Id == lessonId);
 
         if (lesson == null) return NotFound("Lesson not found");
+
+        var studentProgress = await _context.StudentProgresses
+            .FirstOrDefaultAsync(p => p.StudentId == userId && p.CourseId == lesson.CourseId);
+
+        if (studentProgress == null)
+        {
+            return BadRequest(new { message = "Please start the course before marking lessons as completed." });
+        }
 
         var lessonProgress = await _context.LessonProgresses
             .FirstOrDefaultAsync(lp => lp.StudentId == userId && lp.LessonId == lessonId);
@@ -219,10 +230,10 @@ public class StudentProgressController : ControllerBase
 
         await _progressService.UpdateStudentProgressAsync(userId, lesson.CourseId);
 
-        var studentProgress = await _context.StudentProgresses
+        var finalProgress = await _context.StudentProgresses
             .FirstOrDefaultAsync(p => p.StudentId == userId && p.CourseId == lesson.CourseId);
 
-        return Ok(new { ProgressPercentage = studentProgress?.ProgressPercentage ?? 0 });
+        return Ok(new { ProgressPercentage = finalProgress?.ProgressPercentage ?? 0 });
     }
 
     [HttpGet("quiz/{quizId}")]

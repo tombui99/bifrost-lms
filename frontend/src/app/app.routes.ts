@@ -15,6 +15,14 @@ export const routes: Routes = [
     canActivate: [authGuard, teacherGuard],
   },
   {
+    path: 'teacher/analytics',
+    loadComponent: () =>
+      import('./teacher-analytics/teacher-analytics.component').then(
+        (m) => m.TeacherAnalyticsComponent,
+      ),
+    canActivate: [authGuard, teacherGuard],
+  },
+  {
     path: 'courses/:courseId/lessons/add',
     component: LessonEditComponent,
     canActivate: [authGuard, teacherGuard],

@@ -604,6 +604,8 @@ export class QuizEditComponent implements OnInit {
         return;
       }
     }
-    this.router.navigate(['/courses/manage']);
+    this.router.navigate(['/courses/manage'], {
+      queryParams: { expanded: this.courseId },
+    });
   }
 }

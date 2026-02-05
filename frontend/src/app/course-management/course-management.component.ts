@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CoursesService } from '../api/api/courses.service';
 import { LessonsService } from '../api/api/lessons.service';
 import { Course, CreateCourseDto, UpdateCourseDto, Lesson } from '../api/model/models';
@@ -511,6 +511,7 @@ export class CourseManagementComponent implements OnInit {
   private coursesService = inject(CoursesService);
   private lessonsService = inject(LessonsService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   courses = signal<Course[]>([]);
   loading = signal(true);
@@ -536,6 +537,14 @@ export class CourseManagementComponent implements OnInit {
 
   ngOnInit() {
     this.loadCourses();
+    const expandedId = this.route.snapshot.queryParamMap.get('expanded');
+    if (expandedId) {
+      this.expandedCourses.update((set) => {
+        const newSet = new Set(set);
+        newSet.add(parseInt(expandedId, 10));
+        return newSet;
+      });
+    }
   }
 
   loadCourses() {

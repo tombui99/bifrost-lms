@@ -1,6 +1,5 @@
 export * from './apiCoursesIdGetIdParameter';
 export * from './apiLessonsIdUploadPostRequestAllOfLength';
-export * from './applicationUser';
 export * from './batchUpdateChoiceDto';
 export * from './batchUpdateChoiceDtoId';
 export * from './batchUpdateQuestionDto';
@@ -24,6 +23,7 @@ export * from './quizResultDtoScore';
 export * from './quizSubmissionDto';
 export * from './registerDto';
 export * from './resource';
-export * from './studentProgress';
+export * from './teacherQuizAttemptDto';
+export * from './teacherStudentProgressDto';
 export * from './updateCourseDto';
 export * from './updateLessonDto';

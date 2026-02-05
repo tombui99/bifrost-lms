@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WellaLms.Api.Core.Entities;
 using WellaLms.Api.Data;
+using WellaLms.Api.Core.DTOs;
 
 namespace WellaLms.Api.Controllers;
 
@@ -23,11 +24,8 @@ public class TeacherController : ControllerBase
     [HttpPost("upload-doc")]
     public async Task<ActionResult<Resource>> UploadDocument([FromBody] Resource resource)
     {
-        // In a real app, you might handle file upload here and save to disk/cloud
-        // For now, we assume the resource contains the URL/Link
         if (string.IsNullOrEmpty(resource.TenantId))
         {
-            // Simple tenant logic - simulate getting from user claim or default
             resource.TenantId = "default-tenant"; 
         }
 
@@ -39,13 +37,46 @@ public class TeacherController : ControllerBase
 
     // GET: api/Teacher/student-progress
     [HttpGet("student-progress")]
-    public async Task<ActionResult<IEnumerable<StudentProgress>>> GetStudentProgress()
+    public async Task<ActionResult<IEnumerable<TeacherStudentProgressDto>>> GetStudentProgress()
     {
         var progress = await _context.StudentProgresses
             .Include(sp => sp.Student)
             .Include(sp => sp.Course)
+            .Select(sp => new TeacherStudentProgressDto
+            {
+                StudentId = sp.StudentId,
+                StudentName = sp.Student.FullName ?? sp.Student.UserName ?? "Unknown",
+                StudentEmail = sp.Student.Email ?? "No Email",
+                CourseId = sp.CourseId,
+                CourseTitle = sp.Course.Title,
+                ProgressPercentage = sp.ProgressPercentage,
+                JoinedAt = sp.CreatedAt
+            })
             .ToListAsync();
 
         return Ok(progress);
+    }
+
+    // GET: api/Teacher/quiz-attempts
+    [HttpGet("quiz-attempts")]
+    public async Task<ActionResult<IEnumerable<TeacherQuizAttemptDto>>> GetQuizAttempts()
+    {
+        var attempts = await _context.QuizAttempts
+            .Include(qa => qa.Student)
+            .Include(qa => qa.Quiz)
+            .Select(qa => new TeacherQuizAttemptDto
+            {
+                Id = qa.Id,
+                StudentName = qa.Student.FullName ?? qa.Student.UserName ?? "Unknown",
+                QuizId = qa.QuizId,
+                QuizTitle = qa.Quiz.Title,
+                Score = qa.Score,
+                IsPassed = qa.IsPassed,
+                CompletedAt = qa.CompletedAt
+            })
+            .OrderByDescending(qa => qa.CompletedAt)
+            .ToListAsync();
+
+        return Ok(attempts);
     }
 }

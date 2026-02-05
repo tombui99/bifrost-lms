@@ -39,7 +39,7 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
       </header>
 
       <!-- Main Content -->
-      <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      <main class="grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         <!-- Teacher/Admin Section -->
         @if (authService.userRole() === 'Teacher' || authService.userRole() === 'Admin') {
           <div class="mb-8">
@@ -58,7 +58,7 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
               >
                 <div class="p-5">
                   <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-yellow-100 rounded-md p-3">
+                    <div class="shrink-0 bg-yellow-100 rounded-md p-3">
                       <svg
                         class="h-6 w-6 text-yellow-600"
                         fill="none"
@@ -82,11 +82,12 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
 
               <!-- Student Progress Widget -->
               <div
+                (click)="navigateToAnalytics()"
                 class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition cursor-pointer border-l-4 border-yellow-400"
               >
                 <div class="p-5">
                   <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-yellow-100 rounded-md p-3">
+                    <div class="shrink-0 bg-yellow-100 rounded-md p-3">
                       <svg
                         class="h-6 w-6 text-yellow-600"
                         fill="none"
@@ -120,7 +121,7 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
             >
               <div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
                 <!-- Circular Progress -->
-                <div class="relative w-32 h-32 flex-shrink-0">
+                <div class="relative w-32 h-32 shrink-0">
                   <svg class="w-full h-full transform -rotate-90">
                     <circle
                       cx="64"
@@ -151,7 +152,7 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
                   </div>
                 </div>
 
-                <div class="flex-grow text-center md:text-left">
+                <div class="grow text-center md:text-left">
                   <h3 class="text-2xl font-black text-gray-900 mb-2">Your Learning Journey</h3>
                   <p class="text-gray-500 mb-4 max-w-md">
                     You've completed {{ overallProgress() }}% of your assigned materials. Keep going
@@ -349,6 +350,10 @@ export class DashboardComponent implements OnInit {
 
   navigateToCourseManagement() {
     this.router.navigate(['/courses/manage']);
+  }
+
+  navigateToAnalytics() {
+    this.router.navigate(['/teacher/analytics']);
   }
 
   navigateToStudentCourses() {
