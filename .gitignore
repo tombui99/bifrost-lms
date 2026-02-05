@@ -62,5 +62,5 @@ bazel-out
 .editorconfig
 
 # User Uploads
-backend/WellaLms.Api/wwwroot/uploads/**
-!backend/WellaLms.Api/wwwroot/uploads/.gitkeep
+backend/BifrostLms.Api/wwwroot/uploads/**
+!backend/BifrostLms.Api/wwwroot/uploads/.gitkeep

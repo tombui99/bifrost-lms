@@ -1,6 +1,6 @@
-# Wella LMS - Multi-tenant Learning Management System
+# Bifrost LMS - Multi-tenant Learning Management System
 
-Wella LMS is a modern, multi-tenant SaaS learning platform built with .NET 10 (Backend) and Angular (Frontend).
+Bifrost LMS is a modern, multi-tenant SaaS learning platform built with .NET 10 (Backend) and Angular (Frontend).
 
 ## 🚀 Tech Stack
 
@@ -32,11 +32,11 @@ Wella LMS is a modern, multi-tenant SaaS learning platform built with .NET 10 (B
 ### 1. Backend Setup
 
 1. **Configure Connection String**:
-   Update `backend/WellaLms.Api/appsettings.json` with your MySQL credentials:
+   Update `backend/BifrostLms.Api/appsettings.json` with your MySQL credentials:
 
    ```json
    "ConnectionStrings": {
-     "DefaultConnection": "Server=localhost;Database=wella_lms;Uid=root;Pwd=YourPassword;"
+     "DefaultConnection": "Server=localhost;Database=bifrost_lms;Uid=root;Pwd=YourPassword;"
    }
    ```
 
@@ -51,7 +51,7 @@ Wella LMS is a modern, multi-tenant SaaS learning platform built with .NET 10 (B
 3. **Start the API**:
 
    ```bash
-   dotnet run --project WellaLms.Api
+   dotnet run --project BifrostLms.Api
    ```
 
    The API will be available at `http://localhost:5000` (Swagger UI at `/swagger`).

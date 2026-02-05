@@ -1,11 +1,11 @@
 services:
   db:
     image: mysql:8.0
-    container_name: wella-lms-db
+    container_name: bifrost-lms-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: YourPassword
-      MYSQL_DATABASE: wella_lms
+      MYSQL_DATABASE: bifrost_lms
     ports:
       - "3306:3306"
     volumes:

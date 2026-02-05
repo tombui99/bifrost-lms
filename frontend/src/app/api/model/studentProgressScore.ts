@@ -1,5 +1,5 @@
 /**
- * WellaLms.Api | v1
+ * BifrostLms.Api | v1
  *
  * 
  *

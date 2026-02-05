@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AuthenticationService {
-  private tokenKey = 'wella_token';
-  private roleKey = 'wella_role';
+  private tokenKey = 'bifrost_token';
+  private roleKey = 'bifrost_role';
 
   // To update UI reactively
   private userRoleSignal = signal<string | null>(this.getUserRole());
