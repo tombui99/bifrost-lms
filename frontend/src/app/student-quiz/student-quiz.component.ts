@@ -5,11 +5,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StudentProgressService } from '../api/api/studentProgress.service';
 import { QuizDto, QuizSubmissionDto, QuizResultDto } from '../api/model/models';
 import { NotificationService } from '../services/notification.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../core/language/language.service';
 
 @Component({
   selector: 'app-student-quiz',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   template: `
     <div class="min-h-screen bg-gray-50 py-8">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,7 +31,7 @@ import { NotificationService } from '../services/notification.service';
             <div>
               <h1 class="text-3xl font-extrabold text-gray-900">{{ quiz()?.title }}</h1>
               <p class="text-gray-500">
-                {{ quiz()?.description || 'Please answer all questions to complete the course.' }}
+                {{ quiz()?.description || ('QUIZ.QUIZ_DESC' | translate) }}
               </p>
             </div>
           }
@@ -70,10 +72,14 @@ import { NotificationService } from '../services/notification.service';
             </div>
 
             <h2 class="text-3xl font-bold text-gray-900 mb-2">
-              {{ result()!.isPassed ? 'Congratulations!' : 'Not Quite There Yet' }}
+              {{
+                result()!.isPassed
+                  ? ('QUIZ.CONGRATULATIONS' | translate)
+                  : ('QUIZ.NOT_QUITE_THERE' | translate)
+              }}
             </h2>
             <p class="text-lg text-gray-500 mb-8">
-              You scored
+              {{ 'QUIZ.YOU_SCORED' | translate }}
               <span
                 class="font-bold"
                 [class.text-green-600]="result()!.isPassed"
@@ -81,9 +87,9 @@ import { NotificationService } from '../services/notification.service';
                 >{{ score() | number: '1.0-0' }}%</span
               >.
               @if (result()!.isPassed) {
-                You have successfully passed the final assessment!
+                {{ 'QUIZ.PASSED_MSG' | translate }}
               } @else {
-                You need at least 50% to pass this quiz. Try again to complete the course.
+                {{ 'QUIZ.FAILED_MSG' | translate }}
               }
             </p>
 
@@ -93,14 +99,14 @@ import { NotificationService } from '../services/notification.service';
                   (click)="resetQuiz()"
                   class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition-transform active:scale-95"
                 >
-                  Try Again
+                  {{ 'COURSE.TRY_AGAIN' | translate }}
                 </button>
               }
               <button
                 (click)="goBack()"
                 class="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold rounded-xl transition-colors"
               >
-                Back to Course
+                {{ 'QUIZ.BACK_TO_COURSE' | translate }}
               </button>
             </div>
           </div>
@@ -170,14 +176,19 @@ import { NotificationService } from '../services/notification.service';
             >
               <div class="max-w-3xl mx-auto flex items-center justify-between">
                 <p class="text-sm font-medium text-gray-500">
-                  {{ answeredCount() }} of {{ quiz()!.questions?.length || 0 }} questions answered
+                  {{ answeredCount() }} {{ 'COMMON.OF' | translate }}
+                  {{ quiz()!.questions?.length || 0 }} {{ 'QUIZ.QUESTIONS_ANSWERED' | translate }}
                 </p>
                 <button
                   (click)="submitQuiz()"
                   [disabled]="!allAnswered() || submitting()"
                   class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
                 >
-                  {{ submitting() ? 'Submitting...' : 'Submit Final Quiz' }}
+                  {{
+                    submitting()
+                      ? ('QUIZ.SUBMITTING' | translate)
+                      : ('QUIZ.SUBMIT_QUIZ' | translate)
+                  }}
                 </button>
               </div>
             </div>
@@ -209,6 +220,7 @@ export class StudentQuizComponent implements OnInit {
   private router = inject(Router);
   private progressService = inject(StudentProgressService);
   private notificationService = inject(NotificationService);
+  public languageService = inject(LanguageService);
 
   courseId!: number;
   quizId!: number;

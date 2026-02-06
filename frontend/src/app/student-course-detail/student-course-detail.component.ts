@@ -6,6 +6,8 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
 import { CourseProgressDto } from '../api/model/courseProgressDto';
 import { LessonProgressDto } from '../api/model/lessonProgressDto';
 import { NotificationService } from '../services/notification.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../core/language/language.service';
 
 import { DomSanitizer } from '@angular/platform-browser';
 import { Pipe, PipeTransform } from '@angular/core';
@@ -24,7 +26,7 @@ export class SafePipe implements PipeTransform {
 @Component({
   selector: 'app-student-course-detail',
   standalone: true,
-  imports: [CommonModule, SafePipe],
+  imports: [CommonModule, SafePipe, TranslateModule],
   template: `
     <div class="min-h-screen bg-gray-50 py-8">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,7 +46,7 @@ export class SafePipe implements PipeTransform {
                     d="M10 19l-7-7m0 0l7-7m-7 7h18"
                   />
                 </svg>
-                Back to Courses
+                {{ 'COURSE.BACK_TO_COURSES' | translate }}
               </a>
             </li>
           </ol>
@@ -88,7 +90,7 @@ export class SafePipe implements PipeTransform {
           </div>
         } @else if (!courseProgress()) {
           <div class="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-100">
-            <p class="text-gray-500">Course not found.</p>
+            <p class="text-gray-500">{{ 'COMMON.NO_COURSES' | translate }}</p>
           </div>
         } @else {
           <!-- Course Header -->
@@ -98,7 +100,7 @@ export class SafePipe implements PipeTransform {
                 <span
                   class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 mb-2"
                 >
-                  COURSE CONTENT
+                  {{ 'COURSE.COURSE_CONTENT' | translate }}
                 </span>
                 <h1 class="text-4xl font-extrabold text-gray-900 leading-tight mb-4">
                   {{ courseProgress()?.courseTitle }}
@@ -109,9 +111,9 @@ export class SafePipe implements PipeTransform {
                   <div class="flex items-center gap-4">
                     <div class="flex-1 max-w-xs">
                       <div class="flex justify-between mb-1">
-                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider"
-                          >Overall Completion</span
-                        >
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                          {{ 'COURSE.OVERALL_COMPLETION' | translate }}
+                        </span>
                         <span class="text-sm font-bold text-indigo-600"
                           >{{ progressPercentage() }}%</span
                         >
@@ -144,12 +146,16 @@ export class SafePipe implements PipeTransform {
                     (click)="startCourse()"
                     class="w-full md:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all transform hover:scale-105 active:scale-95"
                   >
-                    Start Course
+                    {{ 'COURSE.START_LEARNING' | translate }}
                   </button>
                 } @else if (progressPercentage() === 100) {
                   <div class="text-center">
-                    <span class="block text-green-600 font-bold mb-1">Course Completed!</span>
-                    <p class="text-gray-500 text-sm">You've mastered this subject.</p>
+                    <span class="block text-green-600 font-bold mb-1">
+                      {{ 'COURSE.COURSE_COMPLETED_MSG' | translate }}
+                    </span>
+                    <p class="text-gray-500 text-sm">
+                      {{ 'COURSE.MASTERED_MSG' | translate }}
+                    </p>
                   </div>
                 }
               </div>
@@ -173,7 +179,9 @@ export class SafePipe implements PipeTransform {
                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                   />
                 </svg>
-                Lesson Plan ({{ (courseProgress()?.lessons || []).length }})
+                {{ 'COURSE.LESSON_PLAN' | translate }} ({{
+                  (courseProgress()?.lessons || []).length
+                }})
               </h2>
 
               @for (
@@ -212,7 +220,11 @@ export class SafePipe implements PipeTransform {
                       <div>
                         <h3 class="font-bold text-gray-900">{{ lesson.lessonTitle }}</h3>
                         <p class="text-xs text-gray-500 uppercase tracking-tighter">
-                          Lesson {{ i + 1 }} • {{ lesson.isCompleted ? 'Finished' : 'Available' }}
+                          {{ 'COURSE.LESSON' | translate }} {{ i + 1 }} •
+                          {{
+                            (lesson.isCompleted ? 'COURSE.FINISHED' : 'COURSE.AVAILABLE')
+                              | translate
+                          }}
                         </p>
                       </div>
                     </div>
@@ -221,7 +233,7 @@ export class SafePipe implements PipeTransform {
                         <span
                           class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
                         >
-                          Complete
+                          {{ 'COURSE.COMPLETE' | translate }}
                         </span>
                       }
                       <svg
@@ -295,13 +307,13 @@ export class SafePipe implements PipeTransform {
                                     clip-rule="evenodd"
                                   ></path>
                                 </svg>
-                                Course Document (PDF)
+                                {{ 'COURSE.COURSE_DOCUMENT' | translate }}
                               </span>
                               <a
                                 [href]="getFullUrl(lesson.pdfUrl)"
                                 target="_blank"
                                 class="text-indigo-600 hover:text-indigo-800 text-xs font-bold uppercase tracking-wider"
-                                >Open in new tab</a
+                                >{{ 'COURSE.OPEN_IN_NEW_TAB' | translate }}</a
                               >
                             </div>
                             <div class="h-150 w-full">
@@ -336,7 +348,7 @@ export class SafePipe implements PipeTransform {
                                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                               ></path>
                             </svg>
-                            <p>This lesson is currently being prepared by the teacher.</p>
+                            <p>{{ 'COURSE.LESSON_PREPARING' | translate }}</p>
                           </div>
                         }
                       </div>
@@ -347,7 +359,7 @@ export class SafePipe implements PipeTransform {
                             (click)="completeLesson(lesson.lessonId)"
                             class="flex items-center px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl shadow-md transition-all transform hover:scale-105 active:scale-95"
                           >
-                            Mark as Completed
+                            {{ 'COURSE.MARK_AS_COMPLETED' | translate }}
                             <svg
                               class="ml-2 h-4 w-4"
                               fill="none"
@@ -371,7 +383,8 @@ export class SafePipe implements PipeTransform {
                                 clip-rule="evenodd"
                               />
                             </svg>
-                            Completed on {{ lesson.completedAt | date: 'mediumDate' }}
+                            {{ 'COURSE.COMPLETED_ON' | translate }}
+                            {{ lesson.completedAt | date: 'mediumDate' }}
                           </div>
                         }
                       </div>
@@ -396,7 +409,7 @@ export class SafePipe implements PipeTransform {
                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
                       />
                     </svg>
-                    Final Assessment
+                    {{ 'COMMON.FINAL_ASSESSMENT' | translate }}
                   </h2>
 
                   <div
@@ -424,7 +437,7 @@ export class SafePipe implements PipeTransform {
                         {{ courseProgress()?.courseTitle }} Quiz
                       </h3>
                       <p class="text-gray-500 mb-8 max-w-sm mx-auto">
-                        Assess your knowledge and complete the course by passing this final quiz.
+                        {{ 'QUIZ.QUIZ_DESC' | translate }}
                       </p>
 
                       @if (courseProgress()?.isQuizPassed) {
@@ -439,13 +452,13 @@ export class SafePipe implements PipeTransform {
                                 clip-rule="evenodd"
                               />
                             </svg>
-                            Quiz Passed
+                            {{ 'QUIZ.QUIZ_PASSED' | translate }}
                           </div>
                           <button
                             (click)="takeQuiz()"
                             class="text-indigo-600 hover:text-indigo-800 font-bold text-sm"
                           >
-                            Retake Quiz
+                            {{ 'QUIZ.RETAKE_QUIZ' | translate }}
                           </button>
                         </div>
                       } @else {
@@ -453,7 +466,7 @@ export class SafePipe implements PipeTransform {
                           (click)="takeQuiz()"
                           class="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all transform hover:scale-105 active:scale-95"
                         >
-                          Start Final Quiz
+                          {{ 'QUIZ.START_QUIZ' | translate }}
                         </button>
                       }
                     </div>
@@ -480,10 +493,11 @@ export class SafePipe implements PipeTransform {
                   />
                 </svg>
               </div>
-              <h3 class="text-lg font-bold text-indigo-900 mb-2">Content Locked</h3>
+              <h3 class="text-lg font-bold text-indigo-900 mb-2">
+                {{ 'COURSE.CONTENT_LOCKED' | translate }}
+              </h3>
               <p class="text-indigo-600/70 text-sm mb-0">
-                Please click the <b>Start Course</b> button above to unlock the lesson plan and
-                quizzes.
+                {{ 'COURSE.UNLOCK_MSG' | translate }}
               </p>
             </div>
           }
@@ -565,6 +579,7 @@ export class StudentCourseDetailComponent implements OnInit {
   private router = inject(Router);
   private progressService = inject(StudentProgressService);
   private notificationService = inject(NotificationService);
+  public languageService = inject(LanguageService);
 
   courseId!: number;
   courseProgress = signal<CourseProgressDto | undefined>(undefined);

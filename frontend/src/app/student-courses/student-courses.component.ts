@@ -1,19 +1,22 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { StudentProgressService } from '../api/api/studentProgress.service';
 import { CourseProgressDto } from '../api/model/courseProgressDto';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../core/language/language.service';
 
 @Component({
   selector: 'app-student-courses',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
     <div class="min-h-screen bg-gray-50 py-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between mb-8">
-          <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Your Courses</h1>
+          <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">
+            {{ 'COURSE.YOUR_COURSES' | translate }}
+          </h1>
           <button
             (click)="goBack()"
             class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
@@ -31,7 +34,7 @@ import { CourseProgressDto } from '../api/model/courseProgressDto';
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            Back to Dashboard
+            {{ 'COURSE.BACK_TO_DASHBOARD' | translate }}
           </button>
         </div>
 
@@ -60,13 +63,15 @@ import { CourseProgressDto } from '../api/model/courseProgressDto';
                 />
               </svg>
             </div>
-            <h3 class="text-lg font-bold text-red-900 mb-2">Service Unavailable</h3>
+            <h3 class="text-lg font-bold text-red-900 mb-2">
+              {{ 'COURSE.SERVICE_UNAVAILABLE' | translate }}
+            </h3>
             <p class="text-red-700 mb-6 text-sm">{{ errorMessage() }}</p>
             <button
               (click)="loadCourses()"
               class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors shadow-md active:scale-95"
             >
-              Try Again
+              {{ 'COURSE.TRY_AGAIN' | translate }}
             </button>
           </div>
         } @else if (courses().length === 0) {
@@ -84,8 +89,12 @@ import { CourseProgressDto } from '../api/model/courseProgressDto';
                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 4.168 6.253v13C4.168 19.333 5.477 19 7.5 19s3.332.333 4.168.618m4.332 0c.835-.285 1.668-.618 4.168-.618 1.667 0 3.253.477 3.253.618v-13C19.832 5.477 18.246 5 16.5 5c-1.668 0-3.253.477-4.168.618"
               />
             </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">No courses found</h3>
-            <p class="mt-1 text-sm text-gray-500">Wait for your teacher to assign some courses.</p>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">
+              {{ 'COURSE.NO_COURSES_FOUND' | translate }}
+            </h3>
+            <p class="mt-1 text-sm text-gray-500">
+              {{ 'COURSE.WAIT_FOR_ASSIGNMENT' | translate }}
+            </p>
           </div>
         } @else {
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -113,25 +122,25 @@ import { CourseProgressDto } from '../api/model/courseProgressDto';
                             clip-rule="evenodd"
                           />
                         </svg>
-                        Completed
+                        {{ 'COURSE.COMPLETED' | translate }}
                       </span>
                     } @else if (course.isStarted) {
                       <span
                         class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 shadow-sm border border-indigo-200"
                       >
-                        In Progress
+                        {{ 'COURSE.IN_PROGRESS' | translate }}
                       </span>
                     } @else {
                       <span
                         class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 shadow-sm border border-gray-200"
                       >
-                        Not Started
+                        {{ 'COURSE.NOT_STARTED' | translate }}
                       </span>
                     }
                   </div>
                   <div class="absolute bottom-4 left-4 text-white">
                     <p class="text-xs font-medium uppercase tracking-wider opacity-80 mb-1">
-                      Course
+                      {{ 'COMMON.COURSE' | translate }}
                     </p>
                     <h3 class="text-xl font-bold leading-tight">{{ course.courseTitle }}</h3>
                   </div>
@@ -143,7 +152,9 @@ import { CourseProgressDto } from '../api/model/courseProgressDto';
                     <!-- Progress Bar -->
                     <div class="mb-5">
                       <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold text-gray-500 uppercase">Progress</span>
+                        <span class="text-xs font-bold text-gray-500 uppercase">
+                          {{ 'COURSE.PROGRESS' | translate }}
+                        </span>
                         <span class="text-sm font-bold text-indigo-600"
                           >{{ getProgress(course) }}%</span
                         >
@@ -160,11 +171,11 @@ import { CourseProgressDto } from '../api/model/courseProgressDto';
                       class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center group-hover:scale-[1.02]"
                     >
                       @if (!course.isStarted) {
-                        Start Learning
+                        {{ 'COURSE.START_LEARNING' | translate }}
                       } @else if (getProgress(course) === 100) {
-                        Review Course
+                        {{ 'COURSE.REVIEW_COURSE' | translate }}
                       } @else {
-                        Continue Learning
+                        {{ 'COURSE.CONTINUE_LEARNING' | translate }}
                       }
                       <svg
                         class="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform"
@@ -200,6 +211,7 @@ import { CourseProgressDto } from '../api/model/courseProgressDto';
 export class StudentCoursesComponent implements OnInit {
   private progressService = inject(StudentProgressService);
   private router = inject(Router);
+  public languageService = inject(LanguageService);
 
   courses = signal<CourseProgressDto[]>([]);
   loading = signal(true);

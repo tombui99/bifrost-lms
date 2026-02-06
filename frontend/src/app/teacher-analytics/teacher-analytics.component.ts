@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { TeacherService } from '../api/api/teacher.service';
 import { TeacherStudentProgressDto, TeacherQuizAttemptDto } from '../api/model/models';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../core/language/language.service';
 
 @Component({
   selector: 'app-teacher-analytics',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
     <div class="min-h-screen bg-gray-50 flex flex-col">
       <!-- Header -->
@@ -24,7 +26,9 @@ import { Router } from '@angular/router';
                 />
               </svg>
             </button>
-            <h1 class="text-2xl font-bold text-gray-900">Learning Analytics</h1>
+            <h1 class="text-2xl font-bold text-gray-900">
+              {{ 'ANALYTICS.TITLE' | translate }}
+            </h1>
           </div>
         </div>
       </header>
@@ -36,7 +40,9 @@ import { Router } from '@angular/router';
             class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group"
           >
             <div class="relative z-10">
-              <p class="text-sm font-medium text-gray-500 mb-1">Total Enrolled Students</p>
+              <p class="text-sm font-medium text-gray-500 mb-1">
+                {{ 'ANALYTICS.TOTAL_STUDENTS' | translate }}
+              </p>
               <h3 class="text-3xl font-black text-indigo-600">{{ uniqueStudentsCount() }}</h3>
             </div>
             <div
@@ -54,7 +60,9 @@ import { Router } from '@angular/router';
             class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group"
           >
             <div class="relative z-10">
-              <p class="text-sm font-medium text-gray-500 mb-1">Average Course Progress</p>
+              <p class="text-sm font-medium text-gray-500 mb-1">
+                {{ 'ANALYTICS.AVG_PROGRESS' | translate }}
+              </p>
               <h3 class="text-3xl font-black text-green-600">{{ averageProgress() }}%</h3>
             </div>
             <div
@@ -72,7 +80,9 @@ import { Router } from '@angular/router';
             class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group"
           >
             <div class="relative z-10">
-              <p class="text-sm font-medium text-gray-500 mb-1">Quiz Pass Rate</p>
+              <p class="text-sm font-medium text-gray-500 mb-1">
+                {{ 'ANALYTICS.QUIZ_PASS_RATE' | translate }}
+              </p>
               <h3 class="text-3xl font-black text-orange-600">{{ quizPassRate() }}%</h3>
             </div>
             <div
@@ -96,7 +106,7 @@ import { Router } from '@angular/router';
               [class.border-indigo-600]="activeTab() === 'progress'"
               class="flex-1 py-4 px-6 text-sm font-bold border-b-2 transition-all hover:bg-gray-50"
             >
-              Student Progress
+              {{ 'ANALYTICS.STUDENT_PROGRESS' | translate }}
             </button>
             <div class="w-px h-10 bg-gray-100 self-stretch my-2"></div>
             <button
@@ -105,7 +115,7 @@ import { Router } from '@angular/router';
               [class.border-indigo-600]="activeTab() === 'attempts'"
               class="flex-1 py-4 px-6 text-sm font-bold border-b-2 transition-all hover:bg-gray-50"
             >
-              Recent Quiz Attempts
+              {{ 'ANALYTICS.RECENT_ATTEMPTS' | translate }}
             </button>
           </div>
 
@@ -123,22 +133,22 @@ import { Router } from '@angular/router';
                         <th
                           class="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider"
                         >
-                          Student
+                          {{ 'ANALYTICS.STUDENT' | translate }}
                         </th>
                         <th
                           class="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider"
                         >
-                          Course
+                          {{ 'ANALYTICS.COURSE' | translate }}
                         </th>
                         <th
                           class="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider"
                         >
-                          Progress
+                          {{ 'ANALYTICS.PROGRESS' | translate }}
                         </th>
                         <th
                           class="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider"
                         >
-                          Joined
+                          {{ 'ANALYTICS.JOINED' | translate }}
                         </th>
                       </tr>
                     </thead>
@@ -187,7 +197,7 @@ import { Router } from '@angular/router';
                       } @empty {
                         <tr>
                           <td colspan="4" class="py-10 text-center text-gray-400 italic">
-                            No progress data available yet.
+                            {{ 'ANALYTICS.NO_DATA' | translate }}
                           </td>
                         </tr>
                       }
@@ -202,27 +212,27 @@ import { Router } from '@angular/router';
                         <th
                           class="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider"
                         >
-                          Student
+                          {{ 'ANALYTICS.STUDENT' | translate }}
                         </th>
                         <th
                           class="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider"
                         >
-                          Quiz
+                          {{ 'ANALYTICS.QUIZ' | translate }}
                         </th>
                         <th
                           class="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider"
                         >
-                          Score
+                          {{ 'ANALYTICS.SCORE' | translate }}
                         </th>
                         <th
                           class="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider"
                         >
-                          Result
+                          {{ 'ANALYTICS.RESULT' | translate }}
                         </th>
                         <th
                           class="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider"
                         >
-                          Date
+                          {{ 'ANALYTICS.DATE' | translate }}
                         </th>
                       </tr>
                     </thead>
@@ -248,12 +258,12 @@ import { Router } from '@angular/router';
                             @if (a.isPassed) {
                               <span
                                 class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest"
-                                >Passed</span
+                                >{{ 'ANALYTICS.PASSED' | translate }}</span
                               >
                             } @else {
                               <span
                                 class="bg-red-100 text-red-700 text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest"
-                                >Failed</span
+                                >{{ 'ANALYTICS.FAILED' | translate }}</span
                               >
                             }
                           </td>
@@ -264,7 +274,7 @@ import { Router } from '@angular/router';
                       } @empty {
                         <tr>
                           <td colspan="5" class="py-10 text-center text-gray-400 italic">
-                            No quiz attempts recorded yet.
+                            {{ 'ANALYTICS.NO_DATA' | translate }}
                           </td>
                         </tr>
                       }
@@ -299,6 +309,7 @@ import { Router } from '@angular/router';
 export class TeacherAnalyticsComponent implements OnInit {
   private teacherService = inject(TeacherService);
   private router = inject(Router);
+  public languageService = inject(LanguageService);
 
   loading = signal(true);
   activeTab = signal<'progress' | 'attempts'>('progress');

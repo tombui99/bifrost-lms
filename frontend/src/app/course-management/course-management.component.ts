@@ -12,17 +12,23 @@ interface CourseFormData {
   imageUrl: string;
 }
 
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../core/language/language.service';
+
 @Component({
   selector: 'app-course-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   template: `
     <div class="min-h-screen bg-gray-50">
       <!-- Header -->
-      <header class="bg-white shadow-sm">
+      <header class="bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div class="flex items-center space-x-3">
-            <button (click)="goBack()" class="text-gray-600 hover:text-gray-900">
+            <button
+              (click)="goBack()"
+              class="p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors"
+            >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -32,21 +38,23 @@ interface CourseFormData {
                 />
               </svg>
             </button>
-            <h1 class="text-2xl font-bold text-gray-900">Course Management</h1>
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight italic">
+              {{ 'COMMON.COURSE_MANAGEMENT' | translate }}
+            </h1>
           </div>
           <button
             (click)="openCreateModal()"
-            class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center space-x-2"
+            class="bg-indigo-600 text-white px-6 py-2.5 rounded-2xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center space-x-2 font-bold active:scale-95"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
+                stroke-width="2.5"
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            <span>Create Course</span>
+            <span>{{ 'COMMON.CREATE_COURSE' | translate }}</span>
           </button>
         </div>
       </header>
@@ -69,50 +77,56 @@ interface CourseFormData {
 
         <!-- Empty State -->
         @if (!loading() && courses().length === 0) {
-          <div class="text-center py-12">
-            <svg
-              class="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <div class="text-center py-20 bg-white rounded-[2.5rem] shadow-sm border border-gray-100">
+            <div
+              class="bg-gray-50 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 4.168 6.253v13C4.168 19.333 5.477 19 7.5 19s3.332.333 4.168.618m4.332 0c.835-.285 1.668-.618 4.168-.618 1.667 0 3.253.477 3.253.618v-13C19.832 5.477 18.246 5 16.5 5c-1.668 0-3.253.477-4.168.618"
-              />
-            </svg>
-            <h3 class="mt-2 text-lg font-medium text-gray-900">No courses yet</h3>
-            <p class="mt-1 text-sm text-gray-500">Get started by creating a new course.</p>
+              <svg
+                class="h-10 w-10 text-gray-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 4.168 6.253v13C4.168 19.333 5.477 19 7.5 19s3.332.333 4.168.618m4.332 0c.835-.285 1.668-.618 4.168-.618 1.667 0 3.253.477 3.253.618v-13C19.832 5.477 18.246 5 16.5 5c-1.668 0-3.253.477-4.168.618"
+                />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">{{ 'COMMON.NO_COURSES' | translate }}</h3>
+            <p class="mt-2 text-gray-500 font-medium">{{ 'COMMON.GET_STARTED' | translate }}</p>
           </div>
         }
 
         <!-- Courses Table -->
         @if (!loading() && courses().length > 0) {
-          <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
+          <div
+            class="bg-white shadow-xl shadow-gray-100 rounded-[2.5rem] overflow-hidden border border-gray-100"
+          >
+            <table class="min-w-full divide-y divide-gray-100">
+              <thead class="bg-gray-50/50">
                 <tr>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"
                   >
-                    Course
+                    {{ 'COMMON.COURSES' | translate }}
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"
                   >
-                    Description
+                    {{ 'COMMON.DESCRIPTION' | translate }}
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"
                   >
-                    Created
+                    {{ 'COMMON.CREATED' | translate }}
                   </th>
                   <th
-                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-8 py-5 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"
                   >
-                    Actions
+                    {{ 'COMMON.ACTIONS' | translate }}
                   </th>
                 </tr>
               </thead>
@@ -170,24 +184,24 @@ interface CourseFormData {
                     </td>
                     <td class="px-6 py-4">
                       <div class="text-sm text-gray-500 max-w-xs truncate">
-                        {{ course.description || 'No description' }}
+                        {{ course.description || ('COMMON.NO_DESCRIPTION' | translate) }}
                       </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {{ course.createdAt | date: 'short' }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td class="px-8 py-5 text-right whitespace-nowrap text-sm font-bold">
                       <button
                         (click)="openEditModal(course)"
-                        class="text-indigo-600 hover:text-indigo-900 mr-4"
+                        class="text-indigo-600 hover:text-indigo-900 mr-6 transition-colors"
                       >
-                        Edit
+                        {{ 'COMMON.EDIT' | translate }}
                       </button>
                       <button
                         (click)="openDeleteModal(course)"
-                        class="text-red-600 hover:text-red-900"
+                        class="text-red-600 hover:text-red-900 transition-colors"
                       >
-                        Delete
+                        {{ 'COMMON.DELETE' | translate }}
                       </button>
                     </td>
                   </tr>
@@ -195,13 +209,13 @@ interface CourseFormData {
                   @if (isExpanded(course.id!)) {
                     <tr>
                       <td colspan="4" class="px-12 py-4 bg-gray-50/50">
-                        <div class="flex justify-between items-center mb-4">
-                          <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider">
-                            Lessons ({{ course.lessons?.length || 0 }})
+                        <div class="flex justify-between items-center mb-6">
+                          <h4 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em]">
+                            {{ 'COMMON.LESSONS' | translate }} ({{ course.lessons?.length || 0 }})
                           </h4>
                           <button
                             (click)="addLesson(course.id!)"
-                            class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center space-x-1"
+                            class="text-xs font-black text-indigo-600 hover:text-indigo-800 flex items-center space-x-2 bg-indigo-50 px-3 py-1.5 rounded-full transition-all hover:scale-105 active:scale-95"
                           >
                             <svg
                               class="w-4 h-4"
@@ -212,11 +226,13 @@ interface CourseFormData {
                               <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
-                                stroke-width="2"
+                                stroke-width="2.5"
                                 d="M12 4v16m8-8H4"
                               />
                             </svg>
-                            <span>Add Lesson</span>
+                            <span class="uppercase tracking-widest">{{
+                              'COMMON.ADD_LESSON' | translate
+                            }}</span>
                           </button>
                         </div>
 
@@ -236,40 +252,44 @@ interface CourseFormData {
                                     lesson.title
                                   }}</span>
                                 </div>
-                                <div class="flex items-center space-x-3">
+                                <div class="flex items-center space-x-4">
                                   <button
                                     (click)="editLesson(course.id!, lesson.id!)"
-                                    class="text-sm text-indigo-600 hover:text-indigo-900"
+                                    class="text-sm font-bold text-indigo-600 hover:text-indigo-900 transition-colors"
                                   >
-                                    Edit
+                                    {{ 'COMMON.EDIT' | translate }}
                                   </button>
                                   <button
                                     (click)="openDeleteLessonModal(lesson)"
-                                    class="text-sm text-red-600 hover:text-red-900"
+                                    class="text-sm font-bold text-red-600 hover:text-red-900 transition-colors"
                                   >
-                                    Delete
+                                    {{ 'COMMON.DELETE' | translate }}
                                   </button>
                                 </div>
                               </div>
                             }
                           </div>
                         } @else {
-                          <p class="text-sm text-gray-500 italic">No lessons in this course yet.</p>
+                          <p class="text-sm text-gray-500 italic">
+                            {{ 'COMMON.NO_LESSONS' | translate }}
+                          </p>
                         }
 
-                        <div class="mt-6 pt-6 border-t border-gray-200">
+                        <div class="mt-8 pt-8 border-t border-gray-100">
                           <div class="flex justify-between items-center">
                             <div>
-                              <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider">
-                                Course Quiz
+                              <h4
+                                class="text-xs font-black text-gray-400 uppercase tracking-[0.2em]"
+                              >
+                                {{ 'COMMON.QUIZ' | translate }}
                               </h4>
-                              <p class="text-xs text-gray-500 mt-1">
-                                Final assessment for the course
+                              <p class="text-sm font-bold text-gray-900 mt-1">
+                                {{ 'COMMON.FINAL_ASSESSMENT' | translate }}
                               </p>
                             </div>
                             <button
                               (click)="manageQuiz(course.id!)"
-                              class="px-4 py-2 bg-indigo-50 text-indigo-700 text-sm font-bold rounded-lg hover:bg-indigo-100 transition-colors flex items-center space-x-2"
+                              class="px-6 py-3 bg-indigo-600 text-white text-xs font-black rounded-2xl hover:bg-indigo-700 transition-all flex items-center space-x-3 shadow-lg shadow-indigo-100 uppercase tracking-widest active:scale-95"
                             >
                               <svg
                                 class="w-4 h-4"
@@ -280,11 +300,11 @@ interface CourseFormData {
                                 <path
                                   stroke-linecap="round"
                                   stroke-linejoin="round"
-                                  stroke-width="2"
+                                  stroke-width="2.5"
                                   d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
                                 />
                               </svg>
-                              <span>Manage Quiz</span>
+                              <span>{{ 'COMMON.MANAGE_QUIZ' | translate }}</span>
                             </button>
                           </div>
                         </div>
@@ -297,20 +317,19 @@ interface CourseFormData {
           </div>
         }
       </main>
-
       <!-- Create/Edit Modal -->
       @if (showModal()) {
         <div
-          class="fixed inset-0 bg-gray-600/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50 transition-all duration-300"
+          class="fixed inset-0 bg-gray-900/40 backdrop-blur-md overflow-y-auto h-full w-full z-50 transition-all duration-300 flex items-center justify-center p-4"
           (click)="closeModal()"
         >
           <div
-            class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-2xl rounded-xl bg-white scale-100"
+            class="relative mx-auto p-8 border border-white/20 w-full max-w-md shadow-2xl rounded-[2.5rem] bg-white animate-scale-up"
             (click)="$event.stopPropagation()"
           >
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-xl font-bold text-gray-900">
-                {{ editingCourse() ? 'Edit Course' : 'Create Course' }}
+            <div class="flex justify-between items-center mb-8">
+              <h3 class="text-2xl font-black text-gray-900 tracking-tight italic">
+                {{ (editingCourse() ? 'COMMON.EDIT_COURSE' : 'COMMON.CREATE_COURSE') | translate }}
               </h3>
               <button
                 (click)="closeModal()"
@@ -331,7 +350,7 @@ interface CourseFormData {
               <div class="space-y-4">
                 <div>
                   <label for="title" class="block text-sm font-semibold text-gray-700"
-                    >Title *</label
+                    >{{ 'COMMON.TITLE' | translate }} *</label
                   >
                   <input
                     type="text"
@@ -346,9 +365,9 @@ interface CourseFormData {
                 </div>
 
                 <div>
-                  <label for="description" class="block text-sm font-semibold text-gray-700"
-                    >Description</label
-                  >
+                  <label for="description" class="block text-sm font-semibold text-gray-700">{{
+                    'COMMON.DESCRIPTION' | translate
+                  }}</label>
                   <textarea
                     id="description"
                     [ngModel]="formData().description"
@@ -380,16 +399,20 @@ interface CourseFormData {
                 <button
                   type="button"
                   (click)="closeModal()"
-                  class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+                  class="px-6 py-3 text-xs font-black text-gray-500 bg-gray-50 hover:bg-gray-100 rounded-2xl transition-all uppercase tracking-widest border border-gray-100"
                 >
-                  Cancel
+                  {{ 'COMMON.CANCEL' | translate }}
                 </button>
                 <button
                   type="submit"
                   [disabled]="saving() || !formData().title"
-                  class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg active:scale-95"
+                  class="px-8 py-3 text-xs font-black text-white bg-indigo-600 hover:bg-indigo-700 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-100 uppercase tracking-widest active:scale-95"
                 >
-                  {{ saving() ? 'Saving...' : editingCourse() ? 'Update Course' : 'Create Course' }}
+                  {{
+                    saving()
+                      ? ('COMMON.SAVING' | translate)
+                      : ((editingCourse() ? 'COMMON.EDIT' : 'COMMON.CREATE_COURSE') | translate)
+                  }}
                 </button>
               </div>
             </form>
@@ -409,10 +432,10 @@ interface CourseFormData {
           >
             <div class="text-center">
               <div
-                class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 mb-5"
+                class="mx-auto flex items-center justify-center h-20 w-20 rounded-3xl bg-red-50 mb-6 shadow-sm border border-red-100"
               >
                 <svg
-                  class="h-8 w-8 text-red-600"
+                  class="h-10 w-10 text-red-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -420,30 +443,34 @@ interface CourseFormData {
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    stroke-width="2"
+                    stroke-width="2.5"
                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                   />
                 </svg>
               </div>
-              <h3 class="text-xl font-bold text-gray-900 mb-2">Delete Course?</h3>
-              <p class="text-sm text-gray-500 mb-8 leading-relaxed">
-                Are you sure you want to delete
-                <span class="font-semibold text-gray-700">"{{ courseToDelete()?.title }}"</span>?
-                This action is permanent and cannot be undone.
-              </p>
+              <h3 class="text-2xl font-black text-gray-900 mb-2 tracking-tight">
+                {{ 'COMMON.DELETE_COURSE' | translate }}?
+              </h3>
+              {{ 'COMMON.ARE_YOU_SURE_DELETE' | translate }}
+              <span class="text-indigo-600">"{{ courseToDelete()?.title }}"</span>?
+              {{ 'COMMON.PERMANENT_ACTION' | translate }}
               <div class="flex flex-col space-y-3">
                 <button
                   (click)="confirmDelete()"
                   [disabled]="deleting()"
-                  class="w-full px-5 py-3 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl disabled:opacity-50 transition-all shadow-lg shadow-red-200 active:scale-95"
+                  class="w-full px-6 py-4 text-xs font-black text-white bg-red-600 hover:bg-red-700 rounded-2xl disabled:opacity-50 transition-all shadow-xl shadow-red-100 active:scale-95 uppercase tracking-widest"
                 >
-                  {{ deleting() ? 'Deleting...' : 'Yes, Delete Course' }}
+                  {{
+                    deleting()
+                      ? ('COMMON.SAVING' | translate)
+                      : ('COMMON.DELETE_COURSE' | translate)
+                  }}
                 </button>
                 <button
                   (click)="closeDeleteModal()"
-                  class="w-full px-5 py-3 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors border border-gray-200"
+                  class="w-full px-6 py-4 text-xs font-black text-gray-500 bg-gray-50 hover:bg-gray-100 rounded-2xl transition-all border border-gray-100 uppercase tracking-widest"
                 >
-                  Cancel
+                  {{ 'COMMON.CANCEL' | translate }}
                 </button>
               </div>
             </div>
@@ -463,10 +490,10 @@ interface CourseFormData {
           >
             <div class="text-center">
               <div
-                class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 mb-5"
+                class="mx-auto flex items-center justify-center h-20 w-20 rounded-3xl bg-red-50 mb-6 shadow-sm border border-red-100"
               >
                 <svg
-                  class="h-8 w-8 text-red-600"
+                  class="h-10 w-10 text-red-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -474,30 +501,33 @@ interface CourseFormData {
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    stroke-width="2"
+                    stroke-width="2.5"
                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                   />
                 </svg>
               </div>
-              <h3 class="text-xl font-bold text-gray-900 mb-2">Delete Lesson?</h3>
-              <p class="text-sm text-gray-500 mb-8 leading-relaxed">
-                Are you sure you want to delete
-                <span class="font-semibold text-gray-700">"{{ lessonToDelete()?.title }}"</span>?
-                This action is permanent.
-              </p>
+              <h3 class="text-2xl font-black text-gray-900 mb-2 tracking-tight">
+                {{ 'COMMON.DELETE_LESSON' | translate }}?
+              </h3>
+              {{ 'COMMON.ARE_YOU_SURE_DELETE' | translate }}
+              <span class="text-indigo-600">"{{ lessonToDelete()?.title }}"</span>?
               <div class="flex flex-col space-y-3">
                 <button
                   (click)="confirmDeleteLesson()"
                   [disabled]="deletingLesson()"
-                  class="w-full px-5 py-3 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl disabled:opacity-50 transition-all shadow-lg shadow-red-200 active:scale-95"
+                  class="w-full px-6 py-4 text-xs font-black text-white bg-red-600 hover:bg-red-700 rounded-2xl disabled:opacity-50 transition-all shadow-xl shadow-red-100 active:scale-95 uppercase tracking-widest"
                 >
-                  {{ deletingLesson() ? 'Deleting...' : 'Yes, Delete Lesson' }}
+                  {{
+                    deletingLesson()
+                      ? ('COMMON.SAVING' | translate)
+                      : ('COMMON.YES_DELETE' | translate)
+                  }}
                 </button>
                 <button
                   (click)="closeDeleteLessonModal()"
-                  class="w-full px-5 py-3 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors border border-gray-200"
+                  class="w-full px-6 py-4 text-xs font-black text-gray-500 bg-gray-50 hover:bg-gray-100 rounded-2xl transition-all border border-gray-100 uppercase tracking-widest"
                 >
-                  Cancel
+                  {{ 'COMMON.CANCEL' | translate }}
                 </button>
               </div>
             </div>
@@ -512,6 +542,7 @@ export class CourseManagementComponent implements OnInit {
   private lessonsService = inject(LessonsService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  public languageService = inject(LanguageService);
 
   courses = signal<Course[]>([]);
   loading = signal(true);

@@ -8,11 +8,13 @@ import { LessonsService } from '../api/api/lessons.service';
 import { CreateLessonDto, UpdateLessonDto, Lesson } from '../api/model/models';
 
 import { QuillEditorComponent } from 'ngx-quill';
+import { LanguageService } from '../core/language/language.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-lesson-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, QuillEditorComponent],
+  imports: [CommonModule, FormsModule, QuillEditorComponent, TranslateModule],
   template: `
     <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-3xl mx-auto">
@@ -29,7 +31,11 @@ import { QuillEditorComponent } from 'ngx-quill';
             </svg>
           </button>
           <h1 class="text-3xl font-bold text-gray-900">
-            {{ isEditMode() ? 'Edit Lesson' : 'Add New Lesson' }}
+            {{
+              isEditMode()
+                ? ('LESSON.EDIT_LESSON' | translate)
+                : ('LESSON.ADD_NEW_LESSON' | translate)
+            }}
           </h1>
         </div>
 
@@ -63,7 +69,7 @@ import { QuillEditorComponent } from 'ngx-quill';
               <form (ngSubmit)="saveLesson()" class="space-y-6">
                 <div>
                   <label for="title" class="block text-sm font-semibold text-gray-700 mb-1"
-                    >Lesson Title *</label
+                    >{{ 'LESSON.LESSON_TITLE' | translate }} *</label
                   >
                   <input
                     type="text"
@@ -78,9 +84,9 @@ import { QuillEditorComponent } from 'ngx-quill';
                 </div>
 
                 <div>
-                  <label for="content" class="block text-sm font-semibold text-gray-700 mb-1"
-                    >Content</label
-                  >
+                  <label for="content" class="block text-sm font-semibold text-gray-700 mb-1">{{
+                    'LESSON.CONTENT' | translate
+                  }}</label>
                   <div class="rich-text-editor-container">
                     <quill-editor
                       [ngModel]="lessonData().content"
@@ -113,7 +119,9 @@ import { QuillEditorComponent } from 'ngx-quill';
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <!-- Video Upload -->
                   <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">Upload Video</label>
+                    <label class="block text-sm font-semibold text-gray-700">{{
+                      'LESSON.UPLOAD_VIDEO' | translate
+                    }}</label>
                     <input
                       type="file"
                       (change)="onFileSelected($event, 'video')"
@@ -194,7 +202,9 @@ import { QuillEditorComponent } from 'ngx-quill';
 
                   <!-- PDF Upload -->
                   <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">Upload PDF</label>
+                    <label class="block text-sm font-semibold text-gray-700">{{
+                      'LESSON.UPLOAD_PDF' | translate
+                    }}</label>
                     <input
                       type="file"
                       (change)="onFileSelected($event, 'pdf')"
@@ -278,7 +288,7 @@ import { QuillEditorComponent } from 'ngx-quill';
                   <label
                     for="externalVideoUrl"
                     class="block text-sm font-semibold text-gray-700 mb-1"
-                    >YouTube Video Link</label
+                    >{{ 'LESSON.YOUTUBE_VIDEO_LINK' | translate }}</label
                   >
                   <input
                     type="url"
@@ -297,14 +307,21 @@ import { QuillEditorComponent } from 'ngx-quill';
                     (click)="goBack()"
                     class="px-6 py-3 text-sm font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all border border-gray-200"
                   >
-                    Cancel
+                    {{ 'COMMON.CANCEL' | translate }}
                   </button>
                   <button
                     type="submit"
                     [disabled]="saving() || !lessonData().title"
                     class="px-8 py-3 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-200 active:scale-95"
                   >
-                    {{ saving() ? 'Saving...' : isEditMode() ? 'Update Lesson' : 'Create Lesson' }}
+                    {{
+                      (saving()
+                        ? 'COMMON.SAVING'
+                        : isEditMode()
+                          ? 'LESSON.UPDATE_LESSON'
+                          : 'LESSON.CREATE_LESSON'
+                      ) | translate
+                    }}
                   </button>
                 </div>
               </form>
@@ -335,6 +352,7 @@ export class LessonEditComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private http = inject(HttpClient);
+  public languageService = inject(LanguageService);
 
   isEditMode = signal(false);
   loading = signal(false);

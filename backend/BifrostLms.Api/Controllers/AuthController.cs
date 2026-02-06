@@ -94,7 +94,7 @@ public class AuthController : ControllerBase
         var token = new JwtSecurityToken(
             issuer: "bifrost-lms",
             audience: "bifrost-lms-users",
-            expires: DateTime.Now.AddDays(30),
+            expires: DateTime.UtcNow.AddDays(30),
             claims: authClaims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );

@@ -3,18 +3,20 @@ import { CommonModule } from '@angular/common';
 import { AuthenticationService } from '../core/auth/auth.service';
 import { Router } from '@angular/router';
 import { StudentProgressService } from '../api/api/studentProgress.service';
+import { LanguageService } from '../core/language/language.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
     <div class="min-h-screen bg-gray-50 flex flex-col">
       <!-- Header -->
-      <header class="bg-white shadow-sm">
+      <header class="bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div class="flex items-center space-x-3">
-            <div class="bg-indigo-600 rounded-lg p-2">
+            <div class="bg-indigo-600 rounded-lg p-2 shadow-lg shadow-indigo-100">
               <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -24,16 +26,65 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
                 />
               </svg>
             </div>
-            <h1 class="text-2xl font-bold text-gray-900">Bifrost LMS</h1>
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight italic">
+              Bifrost <span class="text-indigo-600">LMS</span>
+            </h1>
           </div>
-          <div class="flex items-center space-x-4">
-            <span class="text-gray-600"
-              >Welcome,
-              <span class="font-semibold text-indigo-600">{{ authService.userRole() }}</span></span
-            >
-            <button (click)="logout()" class="text-sm text-red-600 hover:text-red-800 font-medium">
-              Logout
-            </button>
+
+          <div class="flex items-center space-x-6">
+            <!-- Language Toggle -->
+            <div class="flex items-center bg-gray-50 rounded-full p-1 border border-gray-200">
+              <button
+                (click)="languageService.setLanguage('en')"
+                [class.bg-white]="languageService.currentLang() === 'en'"
+                [class.shadow-sm]="languageService.currentLang() === 'en'"
+                class="px-3 py-1 rounded-full text-xs font-bold transition-all"
+                [class.text-indigo-600]="languageService.currentLang() === 'en'"
+                [class.text-gray-400]="languageService.currentLang() !== 'en'"
+              >
+                EN
+              </button>
+              <button
+                (click)="languageService.setLanguage('vi')"
+                [class.bg-white]="languageService.currentLang() === 'vi'"
+                [class.shadow-sm]="languageService.currentLang() === 'vi'"
+                class="px-3 py-1 rounded-full text-xs font-bold transition-all"
+                [class.text-indigo-600]="languageService.currentLang() === 'vi'"
+                [class.text-gray-400]="languageService.currentLang() !== 'vi'"
+              >
+                VI
+              </button>
+            </div>
+
+            <!-- Profile Section -->
+            <div class="flex items-center space-x-4">
+              <div class="text-right hidden sm:block">
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {{ 'COMMON.PROFILE' | translate }}
+                </p>
+                <p class="text-sm font-bold text-gray-900">
+                  {{
+                    (authService.userRole() === 'Student' ? 'AUTH.STUDENT' : 'AUTH.TEACHER')
+                      | translate
+                  }}
+                </p>
+                <button
+                  (click)="logout()"
+                  class="text-sm text-red-600 hover:text-red-800 font-medium"
+                >
+                  Logout
+                </button>
+              </div>
+              <div class="relative">
+                <div
+                  class="w-10 h-10 rounded-full bg-indigo-100 border-2 border-white shadow-sm flex items-center justify-center overflow-hidden cursor-pointer hover:ring-2 hover:ring-indigo-500 transition-all"
+                >
+                  <span class="text-indigo-600 font-bold text-sm">
+                    {{ (authService.userRole() || 'U').charAt(0) }}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -43,22 +94,26 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
         <!-- Teacher/Admin Section -->
         @if (authService.userRole() === 'Teacher' || authService.userRole() === 'Admin') {
           <div class="mb-8">
-            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <h2
+              class="text-xl font-bold text-gray-800 mb-4 flex items-center uppercase tracking-wide"
+            >
               <span
-                class="bg-yellow-100 text-yellow-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded"
-                >TEACHER AREA</span
+                class="bg-yellow-100 text-yellow-800 text-xs font-semibold mr-3 px-3 py-1 rounded-full shadow-sm"
+                >{{ 'COMMON.MANAGEMENT' | translate }}</span
               >
-              Instructional Tools
+              {{ 'COMMON.COURSES' | translate }}
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <!-- Upload Document Widget -->
+              <!-- Course Management Widget -->
               <div
                 (click)="navigateToCourseManagement()"
-                class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition cursor-pointer border-l-4 border-yellow-400"
+                class="bg-white overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border-t-4 border-yellow-400 group active:scale-95"
               >
-                <div class="p-5">
+                <div class="p-6">
                   <div class="flex items-center">
-                    <div class="shrink-0 bg-yellow-100 rounded-md p-3">
+                    <div
+                      class="shrink-0 bg-yellow-50 rounded-2xl p-4 group-hover:bg-yellow-100 transition-colors"
+                    >
                       <svg
                         class="h-6 w-6 text-yellow-600"
                         fill="none"
@@ -72,22 +127,28 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
                         />
                       </svg>
                     </div>
-                    <div class="ml-5 w-0 flex-1">
-                      <dt class="text-sm font-medium text-gray-500 truncate">Upload Resources</dt>
-                      <dd class="mt-1 text-lg font-semibold text-gray-900">Manage Courses</dd>
+                    <div class="ml-5">
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                        {{ 'COMMON.COURSES' | translate }}
+                      </p>
+                      <p class="text-lg font-black text-gray-900 leading-tight">
+                        {{ 'COMMON.MANAGEMENT' | translate }}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Student Progress Widget -->
+              <!-- Student Analytics Widget -->
               <div
                 (click)="navigateToAnalytics()"
-                class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition cursor-pointer border-l-4 border-yellow-400"
+                class="bg-white overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border-t-4 border-yellow-400 group active:scale-95"
               >
-                <div class="p-5">
+                <div class="p-6">
                   <div class="flex items-center">
-                    <div class="shrink-0 bg-yellow-100 rounded-md p-3">
+                    <div
+                      class="shrink-0 bg-yellow-50 rounded-2xl p-4 group-hover:bg-yellow-100 transition-colors"
+                    >
                       <svg
                         class="h-6 w-6 text-yellow-600"
                         fill="none"
@@ -102,9 +163,13 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
                         />
                       </svg>
                     </div>
-                    <div class="ml-5 w-0 flex-1">
-                      <dt class="text-sm font-medium text-gray-500 truncate">Student Progress</dt>
-                      <dd class="mt-1 text-lg font-semibold text-gray-900">View Analytics</dd>
+                    <div class="ml-5">
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                        {{ 'COMMON.ANALYTICS' | translate }}
+                      </p>
+                      <p class="text-lg font-black text-gray-900 leading-tight">
+                        {{ 'DASHBOARD.STUDENT_PROGRESS' | translate }}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -153,23 +218,31 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
                 </div>
 
                 <div class="grow text-center md:text-left">
-                  <h3 class="text-2xl font-black text-gray-900 mb-2">Your Learning Journey</h3>
-                  <p class="text-gray-500 mb-4 max-w-md">
-                    You've completed {{ overallProgress() }}% of your assigned materials. Keep going
-                    to reach your certification!
+                  <h3 class="text-3xl font-black text-gray-900 mb-2 leading-tight">
+                    {{ 'DASHBOARD.LEARNING_JOURNEY' | translate }}
+                  </h3>
+                  <p class="text-gray-500 mb-6 max-w-md text-lg leading-relaxed">
+                    {{ 'DASHBOARD.COMPLETED_TEXT' | translate }}
+                    <span class="bg-indigo-600 text-white px-2 rounded-lg font-bold"
+                      >{{ overallProgress() }}%</span
+                    >
+                    {{ 'DASHBOARD.MATERIALS_TEXT' | translate }}
                   </p>
                   <div class="flex flex-wrap justify-center md:justify-start gap-4">
-                    <div class="bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-100">
-                      <span class="block text-xs font-bold text-indigo-400 uppercase tracking-wider"
-                        >Status</span
+                    <div
+                      class="bg-indigo-50 px-5 py-3 rounded-2xl border border-indigo-100 shadow-sm transition-all hover:bg-white"
+                    >
+                      <span
+                        class="block text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-1 leading-none"
+                        >{{ 'DASHBOARD.STATUS' | translate }}</span
                       >
-                      <span class="text-indigo-700 font-bold">
+                      <span class="text-indigo-700 font-black text-sm uppercase tracking-wider">
                         @if (overallProgress()! >= 100) {
-                          Mastered
+                          {{ 'DASHBOARD.MASTERED' | translate }}
                         } @else if (overallProgress()! >= 50) {
-                          On Track
+                          {{ 'DASHBOARD.ON_TRACK' | translate }}
                         } @else {
-                          Just Starting
+                          {{ 'DASHBOARD.JUST_STARTING' | translate }}
                         }
                       </span>
                     </div>
@@ -179,9 +252,9 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
                 <div class="hidden lg:block">
                   <button
                     (click)="navigateToStudentCourses()"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-indigo-200 transition-all hover:scale-105 active:scale-95"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 px-10 rounded-3xl shadow-2xl shadow-indigo-100 transition-all hover:scale-105 active:scale-95 text-lg"
                   >
-                    Continue Learning
+                    {{ 'DASHBOARD.CONTINUE_LEARNING' | translate }}
                   </button>
                 </div>
               </div>
@@ -196,16 +269,20 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
 
         <!-- Student Section -->
         @if (authService.userRole() === 'Student') {
-          <h2 class="text-xl font-bold text-gray-800 mb-4">Dashboard Overview</h2>
+          <h2 class="text-2xl font-black text-gray-900 mb-6 tracking-tight">
+            {{ 'DASHBOARD.OVERALL_PROGRESS' | translate }}
+          </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Widget: Schedule -->
             <div
-              class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition cursor-pointer"
+              class="bg-white group overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 active:scale-95"
             >
-              <div class="p-5">
-                <div class="flex items-center justify-center mb-4">
+              <div class="p-6">
+                <div
+                  class="flex items-center justify-center mb-4 bg-indigo-50 w-16 h-16 rounded-2xl mx-auto group-hover:bg-indigo-100 transition-colors"
+                >
                   <svg
-                    class="h-10 w-10 text-indigo-500"
+                    class="h-8 w-8 text-indigo-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -219,8 +296,12 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
                   </svg>
                 </div>
                 <div class="text-center">
-                  <h3 class="text-lg font-medium text-gray-900">Schedule</h3>
-                  <p class="text-sm text-gray-500">View your classes</p>
+                  <h3 class="text-lg font-bold text-gray-900">
+                    {{ 'DASHBOARD.SCHEDULE' | translate }}
+                  </h3>
+                  <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+                    {{ 'DASHBOARD.VIEW_CLASSES' | translate }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -228,12 +309,14 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
             <!-- Widget: Courses -->
             <div
               (click)="navigateToStudentCourses()"
-              class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition cursor-pointer"
+              class="bg-white group overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 active:scale-95"
             >
-              <div class="p-5">
-                <div class="flex items-center justify-center mb-4">
+              <div class="p-6">
+                <div
+                  class="flex items-center justify-center mb-4 bg-indigo-50 w-16 h-16 rounded-2xl mx-auto group-hover:bg-indigo-100 transition-colors"
+                >
                   <svg
-                    class="h-10 w-10 text-indigo-500"
+                    class="h-8 w-8 text-indigo-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -247,20 +330,26 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
                   </svg>
                 </div>
                 <div class="text-center">
-                  <h3 class="text-lg font-medium text-gray-900">Courses</h3>
-                  <p class="text-sm text-gray-500">Access materials</p>
+                  <h3 class="text-lg font-bold text-gray-900">
+                    {{ 'COMMON.COURSES' | translate }}
+                  </h3>
+                  <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+                    {{ 'DASHBOARD.ACTIVE_COURSES' | translate }}
+                  </p>
                 </div>
               </div>
             </div>
 
             <!-- Widget: Forum -->
             <div
-              class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition cursor-pointer"
+              class="bg-white group overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 active:scale-95"
             >
-              <div class="p-5">
-                <div class="flex items-center justify-center mb-4">
+              <div class="p-6">
+                <div
+                  class="flex items-center justify-center mb-4 bg-indigo-50 w-16 h-16 rounded-2xl mx-auto group-hover:bg-indigo-100 transition-colors"
+                >
                   <svg
-                    class="h-10 w-10 text-indigo-500"
+                    class="h-8 w-8 text-indigo-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -274,20 +363,26 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
                   </svg>
                 </div>
                 <div class="text-center">
-                  <h3 class="text-lg font-medium text-gray-900">Forum</h3>
-                  <p class="text-sm text-gray-500">Discuss topics</p>
+                  <h3 class="text-lg font-bold text-gray-900">
+                    {{ 'DASHBOARD.FORUM' | translate }}
+                  </h3>
+                  <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+                    {{ 'DASHBOARD.DISCUSSION' | translate }}
+                  </p>
                 </div>
               </div>
             </div>
 
             <!-- Widget: Resources -->
             <div
-              class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition cursor-pointer"
+              class="bg-white group overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 active:scale-95"
             >
-              <div class="p-5">
-                <div class="flex items-center justify-center mb-4">
+              <div class="p-6">
+                <div
+                  class="flex items-center justify-center mb-4 bg-indigo-50 w-16 h-16 rounded-2xl mx-auto group-hover:bg-indigo-100 transition-colors"
+                >
                   <svg
-                    class="h-10 w-10 text-indigo-500"
+                    class="h-8 w-8 text-indigo-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -301,8 +396,12 @@ import { StudentProgressService } from '../api/api/studentProgress.service';
                   </svg>
                 </div>
                 <div class="text-center">
-                  <h3 class="text-lg font-medium text-gray-900">Reference</h3>
-                  <p class="text-sm text-gray-500">External links</p>
+                  <h3 class="text-lg font-bold text-gray-900">
+                    {{ 'DASHBOARD.LIBRARY' | translate }}
+                  </h3>
+                  <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+                    {{ 'DASHBOARD.RESOURCES' | translate }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -316,6 +415,7 @@ export class DashboardComponent implements OnInit {
   authService = inject(AuthenticationService);
   router = inject(Router);
   studentProgressService = inject(StudentProgressService);
+  public languageService = inject(LanguageService);
 
   overallProgress = signal<number | null>(null);
 
