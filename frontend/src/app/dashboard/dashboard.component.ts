@@ -139,6 +139,42 @@ import { TranslateModule } from '@ngx-translate/core';
                 </div>
               </div>
 
+              <!-- Schedule Management Widget (New) -->
+              <div
+                (click)="navigateToSchedule()"
+                class="bg-white overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border-t-4 border-yellow-400 group active:scale-95"
+              >
+                <div class="p-6">
+                  <div class="flex items-center">
+                    <div
+                      class="shrink-0 bg-yellow-50 rounded-2xl p-4 group-hover:bg-yellow-100 transition-colors"
+                    >
+                      <svg
+                        class="h-6 w-6 text-yellow-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <div class="ml-5">
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                        {{ 'DASHBOARD.SCHEDULE' | translate }}
+                      </p>
+                      <p class="text-lg font-black text-gray-900 leading-tight">
+                        {{ 'COMMON.MANAGEMENT' | translate }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- Student Analytics Widget -->
               <div
                 (click)="navigateToAnalytics()"
@@ -275,6 +311,7 @@ import { TranslateModule } from '@ngx-translate/core';
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Widget: Schedule -->
             <div
+              (click)="navigateToSchedule()"
               class="bg-white group overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 active:scale-95"
             >
               <div class="p-6">
@@ -458,5 +495,13 @@ export class DashboardComponent implements OnInit {
 
   navigateToStudentCourses() {
     this.router.navigate(['/student/courses']);
+  }
+
+  navigateToSchedule() {
+    if (this.authService.userRole() === 'Teacher' || this.authService.userRole() === 'Admin') {
+      this.router.navigate(['/teacher/schedules']);
+    } else {
+      this.router.navigate(['/student/schedule']);
+    }
   }
 }

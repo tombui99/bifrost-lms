@@ -10,4 +10,14 @@ export * from './studentProgress.service';
 import { StudentProgressService } from './studentProgress.service';
 export * from './teacher.service';
 import { TeacherService } from './teacher.service';
-export const APIS = [AuthService, CoursesService, LessonsService, QuizzesService, StudentProgressService, TeacherService];
+export * from './schedules.service';
+import { SchedulesService } from './schedules.service';
+export const APIS = [
+  AuthService,
+  CoursesService,
+  LessonsService,
+  QuizzesService,
+  StudentProgressService,
+  TeacherService,
+  SchedulesService,
+];

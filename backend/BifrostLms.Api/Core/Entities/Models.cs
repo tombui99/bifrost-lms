@@ -51,6 +51,7 @@ public class Schedule : BaseEntity
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
     public string? Location { get; set; }
+    public string? MeetingUrl { get; set; }
 }
 
 public class ForumPost : BaseEntity

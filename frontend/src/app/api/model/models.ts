@@ -27,3 +27,4 @@ export * from './teacherQuizAttemptDto';
 export * from './teacherStudentProgressDto';
 export * from './updateCourseDto';
 export * from './updateLessonDto';
+export * from './schedule';

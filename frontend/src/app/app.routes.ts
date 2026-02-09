@@ -57,6 +57,22 @@ export const routes: Routes = [
       import('./student-quiz/student-quiz.component').then((m) => m.StudentQuizComponent),
     canActivate: [authGuard],
   },
+  {
+    path: 'student/schedule',
+    loadComponent: () =>
+      import('./student-schedule/student-schedule.component').then(
+        (m) => m.StudentScheduleComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'teacher/schedules',
+    loadComponent: () =>
+      import('./teacher-schedule-management/teacher-schedule-management.component').then(
+        (m) => m.TeacherScheduleManagementComponent,
+      ),
+    canActivate: [authGuard, teacherGuard],
+  },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
   { path: '**', redirectTo: 'dashboard' },
