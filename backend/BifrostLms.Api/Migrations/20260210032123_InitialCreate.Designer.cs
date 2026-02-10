@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BifrostLms.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260209042236_MultiTenancyAndAdmin")]
-    partial class MultiTenancyAndAdmin
+    [Migration("20260210032123_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -154,64 +154,17 @@ namespace BifrostLms.Api.Migrations
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("BifrostLms.Api.Core.Entities.FAQ", b =>
+            modelBuilder.Entity("BifrostLms.Api.Core.Entities.CourseTenant", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Answer")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Question")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("TenantId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                    b.HasKey("CourseId", "TenantId");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("FAQs");
-                });
-
-            modelBuilder.Entity("BifrostLms.Api.Core.Entities.ForumPost", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("TenantId")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ForumPosts");
+                    b.ToTable("CourseTenants");
                 });
 
             modelBuilder.Entity("BifrostLms.Api.Core.Entities.Lesson", b =>
@@ -290,36 +243,6 @@ namespace BifrostLms.Api.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("LessonProgresses");
-                });
-
-            modelBuilder.Entity("BifrostLms.Api.Core.Entities.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("TargetUser")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("TenantId")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("BifrostLms.Api.Core.Entities.Question", b =>
@@ -546,33 +469,6 @@ namespace BifrostLms.Api.Migrations
                     b.ToTable("Tenants");
                 });
 
-            modelBuilder.Entity("BifrostLms.Api.Core.Entities.TrainingProgram", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("TenantId")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TrainingPrograms");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -710,6 +606,17 @@ namespace BifrostLms.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("BifrostLms.Api.Core.Entities.CourseTenant", b =>
+                {
+                    b.HasOne("BifrostLms.Api.Core.Entities.Course", "Course")
+                        .WithMany("SharedWithTenants")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("BifrostLms.Api.Core.Entities.Lesson", b =>
@@ -856,6 +763,8 @@ namespace BifrostLms.Api.Migrations
             modelBuilder.Entity("BifrostLms.Api.Core.Entities.Course", b =>
                 {
                     b.Navigation("Lessons");
+
+                    b.Navigation("SharedWithTenants");
                 });
 
             modelBuilder.Entity("BifrostLms.Api.Core.Entities.Question", b =>

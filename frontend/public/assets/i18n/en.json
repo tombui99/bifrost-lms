@@ -83,6 +83,7 @@
     "SELECT_ROLE": "I am a...",
     "STUDENT": "Student",
     "TEACHER": "Teacher",
+    "ADMIN": "Admin",
     "SIGN_IN_BTN": "Sign In",
     "SIGN_UP_BTN": "Sign Up",
     "PROCESSING": "Processing...",

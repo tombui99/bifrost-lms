@@ -19,11 +19,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<CourseTenant> CourseTenants { get; set; }
     public DbSet<Lesson> Lessons { get; set; }
     public DbSet<Schedule> Schedules { get; set; }
-    public DbSet<ForumPost> ForumPosts { get; set; }
     public DbSet<Resource> Resources { get; set; }
-    public DbSet<TrainingProgram> TrainingPrograms { get; set; }
-    public DbSet<FAQ> FAQs { get; set; }
-    public DbSet<Notification> Notifications { get; set; }
     public DbSet<StudentProgress> StudentProgresses { get; set; }
     public DbSet<LessonProgress> LessonProgresses { get; set; }
     public DbSet<Quiz> Quizzes { get; set; }

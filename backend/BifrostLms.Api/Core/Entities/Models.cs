@@ -68,37 +68,11 @@ public class Schedule : BaseEntity
     public string? MeetingUrl { get; set; }
 }
 
-public class ForumPost : BaseEntity
-{
-    public string Title { get; set; } = default!;
-    public string Content { get; set; } = default!;
-    public string Author { get; set; } = default!;
-}
-
 public class Resource : BaseEntity
 {
     public string Title { get; set; } = default!;
     public string? Url { get; set; }
     public string? Type { get; set; } // Document, Video, etc.
-}
-
-public class TrainingProgram : BaseEntity
-{
-    public string Name { get; set; } = default!;
-    public string? Description { get; set; }
-}
-
-public class FAQ : BaseEntity
-{
-    public string Question { get; set; } = default!;
-    public string Answer { get; set; } = default!;
-}
-
-public class Notification : BaseEntity
-{
-    public string Message { get; set; } = default!;
-    public bool IsRead { get; set; }
-    public string? TargetUser { get; set; }
 }
 
 public class StudentProgress : BaseEntity
@@ -158,4 +132,3 @@ public class QuizAttempt : BaseEntity
     public bool IsPassed { get; set; }
     public DateTime CompletedAt { get; set; } = DateTime.UtcNow;
 }
-
