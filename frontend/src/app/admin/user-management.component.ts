@@ -55,7 +55,7 @@ import { UserDisplayDto, Tenant } from '../api/model/models';
                 <p class="font-black text-gray-900 italic tracking-tight capitalize truncate">
                   {{ user.fullName }}
                 </p>
-                <p class="text-xs font-bold text-gray-400 truncate">{{ user.email }}</p>
+                <p class="text-xs font-bold text-gray-400 truncate">{{ user.username }}</p>
               </div>
             </div>
 
@@ -167,14 +167,14 @@ import { UserDisplayDto, Tenant } from '../api/model/models';
               <div>
                 <label
                   class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
-                  >Email Address</label
+                  >Username</label
                 >
                 <input
-                  formControlName="email"
-                  type="email"
+                  formControlName="username"
+                  type="text"
                   class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-100 text-gray-900 placeholder-gray-300 font-bold transition-all disabled:opacity-50"
                   [readonly]="isEditMode()"
-                  placeholder="john@example.com"
+                  placeholder="john_doe"
                 />
               </div>
 
@@ -260,7 +260,7 @@ export class UserManagementComponent implements OnInit {
 
   constructor() {
     this.userForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       fullName: ['', Validators.required],
       role: ['Student', Validators.required],
@@ -295,7 +295,7 @@ export class UserManagementComponent implements OnInit {
     this.isEditMode.set(true);
     this.selectedUserId.set(user.id!);
     this.userForm.patchValue({
-      email: user.email,
+      username: user.username,
       fullName: user.fullName,
       role: user.role,
       tenantId: user.tenantId,

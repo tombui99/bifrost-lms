@@ -13,13 +13,13 @@ export class AuthenticationService {
   private tokenKey = 'bifrost_token';
   private roleKey = 'bifrost_role';
   private tenantKey = 'bifrost_tenant';
-  private emailKey = 'bifrost_email';
+  private usernameKey = 'bifrost_username';
 
   // To update UI reactively
   private userRoleSignal = signal<string | null>(this.getUserRole());
   public userRole = this.userRoleSignal.asReadonly();
-  private emailSignal = signal<string | null>(this.getEmail());
-  public email = this.emailSignal.asReadonly();
+  private usernameSignal = signal<string | null>(this.getUsername());
+  public username = this.usernameSignal.asReadonly();
 
   constructor(
     private apiAuthService: ApiAuthService,
@@ -33,9 +33,9 @@ export class AuthenticationService {
           localStorage.setItem(this.tokenKey, response.token);
           localStorage.setItem(this.roleKey, response.role);
           localStorage.setItem(this.tenantKey, response.tenantId);
-          localStorage.setItem(this.emailKey, response.email);
+          localStorage.setItem(this.usernameKey, response.username);
           this.userRoleSignal.set(response.role);
-          this.emailSignal.set(response.email);
+          this.usernameSignal.set(response.username);
         }
       }),
     );
@@ -45,8 +45,9 @@ export class AuthenticationService {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.roleKey);
     localStorage.removeItem(this.tenantKey);
+    localStorage.removeItem(this.usernameKey);
     this.userRoleSignal.set(null);
-    this.emailSignal.set(null);
+    this.usernameSignal.set(null);
     this.router.navigate(['/login']);
   }
 
@@ -58,8 +59,8 @@ export class AuthenticationService {
     return localStorage.getItem(this.roleKey);
   }
 
-  getEmail(): string | null {
-    return localStorage.getItem(this.emailKey);
+  getUsername(): string | null {
+    return localStorage.getItem(this.usernameKey);
   }
 
   getTenantId(): string | null {

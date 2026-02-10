@@ -44,7 +44,7 @@ public class AdminController : ControllerBase
             userDisplays.Add(new UserDisplayDto
             {
                 Id = user.Id,
-                Email = user.Email!,
+                Username = user.UserName!,
                 FullName = user.FullName ?? "",
                 Role = roles.FirstOrDefault() ?? "Student",
                 TenantId = user.TenantId ?? ""
@@ -57,15 +57,14 @@ public class AdminController : ControllerBase
     [HttpPost("users")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto model)
     {
-        var userExists = await _userManager.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Email == model.Email);
+        var userExists = await _userManager.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.UserName == model.Username);
         if (userExists != null)
             return BadRequest(new { Message = "User already exists!" });
 
         ApplicationUser user = new()
         {
-            Email = model.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = model.Email,
+            UserName = model.Username,
             FullName = model.FullName,
             TenantId = model.TenantId
         };

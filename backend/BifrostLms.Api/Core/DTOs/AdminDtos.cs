@@ -2,7 +2,7 @@ namespace BifrostLms.Api.Core.DTOs;
 
 public class CreateUserDto
 {
-    public string Email { get; set; } = default!;
+    public string Username { get; set; } = default!;
     public string Password { get; set; } = default!;
     public string FullName { get; set; } = default!;
     public string Role { get; set; } = default!;
@@ -12,7 +12,7 @@ public class CreateUserDto
 public class UserDisplayDto
 {
     public string Id { get; set; } = default!;
-    public string Email { get; set; } = default!;
+    public string Username { get; set; } = default!;
     public string FullName { get; set; } = default!;
     public string Role { get; set; } = default!;
     public string TenantId { get; set; } = default!;

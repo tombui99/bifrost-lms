@@ -77,20 +77,20 @@ import { TranslateModule } from '@ngx-translate/core';
           <div>
             <label
               class="block text-white/80 text-xs font-black uppercase tracking-widest mb-2 px-1"
-              >{{ 'AUTH.EMAIL_ADDRESS' | translate }}</label
+              >{{ 'AUTH.USERNAME' | translate }}</label
             >
             <input
-              formControlName="email"
-              type="email"
+              formControlName="username"
+              type="text"
               class="w-full px-5 py-4 rounded-2xl bg-white/20 border border-white/10 focus:border-white focus:bg-white/30 text-white placeholder-white/40 focus:outline-none transition-all duration-300 shadow-inner"
               [class.border-red-400/50]="
-                authForm.get('email')?.invalid && authForm.get('email')?.touched
+                authForm.get('username')?.invalid && authForm.get('username')?.touched
               "
-              placeholder="you@example.com"
+              placeholder="Username"
             />
-            @if (authForm.get('email')?.invalid && authForm.get('email')?.touched) {
+            @if (authForm.get('username')?.invalid && authForm.get('username')?.touched) {
               <div class="text-red-200 text-[10px] font-bold uppercase tracking-wider mt-2 px-1">
-                {{ 'AUTH.ENTER_VALID_EMAIL' | translate }}
+                {{ 'AUTH.ENTER_USERNAME' | translate }}
               </div>
             }
           </div>
@@ -149,7 +149,7 @@ export class LoginComponent {
 
   constructor() {
     this.authForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
@@ -165,7 +165,7 @@ export class LoginComponent {
     this.errorMessage.set('');
     const val = this.authForm.value;
 
-    this.authService.login({ email: val.email, password: val.password }).subscribe({
+    this.authService.login({ username: val.username, password: val.password }).subscribe({
       next: () => {
         this.router.navigate(['/dashboard']);
       },

@@ -13,7 +13,7 @@ import { ApiCoursesIdGetIdParameter } from './apiCoursesIdGetIdParameter';
 export interface TeacherStudentProgressDto { 
     studentId?: string;
     studentName?: string;
-    studentEmail?: string;
+    studentUsername?: string;
     courseId?: ApiCoursesIdGetIdParameter;
     courseTitle?: string;
     progressPercentage?: ApiCoursesIdGetIdParameter;

@@ -31,6 +31,11 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(modelBuilder);
 
+        // Ignore Email fields
+        modelBuilder.Entity<ApplicationUser>().Ignore(c => c.Email);
+        modelBuilder.Entity<ApplicationUser>().Ignore(c => c.NormalizedEmail);
+        modelBuilder.Entity<ApplicationUser>().Ignore(c => c.EmailConfirmed);
+
         // Configure Tenant ID as a key for the Tenant entity
         modelBuilder.Entity<Tenant>().HasKey(t => t.Id);
 

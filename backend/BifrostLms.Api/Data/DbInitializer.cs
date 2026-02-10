@@ -36,15 +36,14 @@ public static class DbInitializer
         }
 
         // 3. Seed Admin User
-        var adminEmail = "admin@bifrost.com";
-        var adminUser = await userManager.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Email == adminEmail);
+        var adminUsername = "admin";
+        var adminUser = await userManager.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.UserName == adminUsername);
 
         if (adminUser == null)
         {
             adminUser = new ApplicationUser
             {
-                UserName = adminEmail,
-                Email = adminEmail,
+                UserName = adminUsername,
                 FullName = "System Admin",
                 TenantId = "system-tenant",
                 EmailConfirmed = true

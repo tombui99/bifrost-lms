@@ -49,7 +49,7 @@ public class TeacherController : ControllerBase
             {
                 StudentId = sp.StudentId,
                 StudentName = sp.Student.FullName ?? sp.Student.UserName ?? "Unknown",
-                StudentEmail = sp.Student.Email ?? "No Email",
+                StudentUsername = sp.Student.UserName ?? "Unknown",
                 CourseId = sp.CourseId,
                 CourseTitle = sp.Course.Title,
                 ProgressPercentage = sp.ProgressPercentage,

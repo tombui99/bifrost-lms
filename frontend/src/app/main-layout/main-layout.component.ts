@@ -86,7 +86,7 @@ import { BASE_PATH } from '../api/variables';
                   }}
                 </p>
                 <p class="text-xs font-medium text-gray-500 tracking-wider mt-1">
-                  {{ authService.email() }}
+                  {{ authService.username() }}
                 </p>
                 <button
                   (click)="logout()"

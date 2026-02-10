@@ -69,7 +69,7 @@
   "AUTH": {
     "LOGIN": "Đăng nhập",
     "SIGNUP": "Đăng ký",
-    "EMAIL": "Email",
+    "USERNAME": "Tên đăng nhập",
     "PASSWORD": "Mật khẩu",
     "FORGOT_PASSWORD": "Quên mật khẩu?",
     "DONT_HAVE_ACCOUNT": "Chưa có tài khoản?",
@@ -79,7 +79,7 @@
     "WELCOME_BACK": "Chào mừng quay lại",
     "CREATE_ACCOUNT": "Tạo tài khoản",
     "FULL_NAME": "Họ và tên",
-    "EMAIL_ADDRESS": "Địa chỉ Email",
+    "USERNAME": "Tên đăng nhập",
     "SELECT_ROLE": "Tôi là...",
     "STUDENT": "Học sinh",
     "TEACHER": "Giáo viên",
@@ -87,7 +87,7 @@
     "SIGN_IN_BTN": "Đăng nhập",
     "SIGN_UP_BTN": "Đăng ký",
     "PROCESSING": "Đang xử lý...",
-    "ENTER_VALID_EMAIL": "Vui lòng nhập địa chỉ email hợp lệ.",
+    "ENTER_USERNAME": "Vui lòng nhập tên đăng nhập.",
     "PASSWORD_MIN_LENGTH": "Mật khẩu phải có ít nhất 6 ký tự.",
     "FORM_ERROR": "Vui lòng sửa các lỗi trong biểu mẫu.",
     "ACCOUNT_CREATED": "Tạo tài khoản thành công! Vui lòng đăng nhập."

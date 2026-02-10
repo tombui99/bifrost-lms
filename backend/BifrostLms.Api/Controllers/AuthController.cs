@@ -30,15 +30,14 @@ public class AuthController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Register([FromBody] RegisterDto model)
     {
-        var userExists = await _userManager.FindByEmailAsync(model.Email);
+        var userExists = await _userManager.FindByNameAsync(model.Username);
         if (userExists != null)
             return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "User already exists!" });
 
         ApplicationUser user = new()
         {
-            Email = model.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = model.Email,
+            UserName = model.Username,
             FullName = model.FullName
         };
 
@@ -61,7 +60,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
-        var user = await _userManager.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Email == model.Email);
+        var user = await _userManager.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.UserName == model.Username);
         if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
         {
             var userRoles = await _userManager.GetRolesAsync(user);
@@ -85,7 +84,7 @@ public class AuthController : ControllerBase
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 Role = userRoles.FirstOrDefault() ?? "Student",
-                Email = user.Email!,
+                Username = user.UserName!,
                 TenantId = user.TenantId ?? ""
             });
         }

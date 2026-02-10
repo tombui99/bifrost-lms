@@ -11,7 +11,7 @@
 
 export interface UserDisplayDto { 
     id?: string;
-    email?: string;
+    username?: string;
     fullName?: string;
     role?: string;
     tenantId?: string;

@@ -69,7 +69,7 @@
   "AUTH": {
     "LOGIN": "Login",
     "SIGNUP": "Sign Up",
-    "EMAIL": "Email",
+    "USERNAME": "Username",
     "PASSWORD": "Password",
     "FORGOT_PASSWORD": "Forgot Password?",
     "DONT_HAVE_ACCOUNT": "Don't have an account?",
@@ -79,7 +79,7 @@
     "WELCOME_BACK": "Welcome Back",
     "CREATE_ACCOUNT": "Create Account",
     "FULL_NAME": "Full Name",
-    "EMAIL_ADDRESS": "Email Address",
+    "USERNAME": "Username",
     "SELECT_ROLE": "I am a...",
     "STUDENT": "Student",
     "TEACHER": "Teacher",
@@ -87,7 +87,7 @@
     "SIGN_IN_BTN": "Sign In",
     "SIGN_UP_BTN": "Sign Up",
     "PROCESSING": "Processing...",
-    "ENTER_VALID_EMAIL": "Please enter a valid email address.",
+    "ENTER_USERNAME": "Please enter your username.",
     "PASSWORD_MIN_LENGTH": "Password must be at least 6 characters.",
     "FORM_ERROR": "Please correct the errors in the form.",
     "ACCOUNT_CREATED": "Account created! Please sign in."
