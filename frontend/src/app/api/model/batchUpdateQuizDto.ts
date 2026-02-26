@@ -7,12 +7,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { BatchUpdateChoiceDtoId } from './batchUpdateChoiceDtoId';
 import { BatchUpdateQuestionDto } from './batchUpdateQuestionDto';
 
 
 export interface BatchUpdateQuizDto { 
     title?: string;
     description?: string | null;
+    timeLimitMinutes?: BatchUpdateChoiceDtoId | null;
+    numberOfQuestionsToServe?: BatchUpdateChoiceDtoId | null;
     questions?: Array<BatchUpdateQuestionDto>;
 }
 

@@ -46,6 +46,8 @@ public class QuizzesController : ControllerBase
             CourseId = courseId,
             Title = dto.Title,
             Description = dto.Description,
+            TimeLimitMinutes = dto.TimeLimitMinutes,
+            NumberOfQuestionsToServe = dto.NumberOfQuestionsToServe,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -65,6 +67,8 @@ public class QuizzesController : ControllerBase
 
         quiz.Title = dto.Title;
         quiz.Description = dto.Description;
+        quiz.TimeLimitMinutes = dto.TimeLimitMinutes;
+        quiz.NumberOfQuestionsToServe = dto.NumberOfQuestionsToServe;
         quiz.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
@@ -160,6 +164,8 @@ public class QuizzesController : ControllerBase
         // 1. Update Quiz Info
         quiz.Title = dto.Title;
         quiz.Description = dto.Description;
+        quiz.TimeLimitMinutes = dto.TimeLimitMinutes;
+        quiz.NumberOfQuestionsToServe = dto.NumberOfQuestionsToServe;
         quiz.UpdatedAt = DateTime.UtcNow;
 
         // 2. Synchronize Questions
@@ -248,6 +254,8 @@ public class QuizzesController : ControllerBase
             Id = quiz.Id,
             Title = quiz.Title,
             Description = quiz.Description,
+            TimeLimitMinutes = quiz.TimeLimitMinutes,
+            NumberOfQuestionsToServe = quiz.NumberOfQuestionsToServe,
             Questions = quiz.Questions.Select(q => new QuestionDto
             {
                 Id = q.Id,

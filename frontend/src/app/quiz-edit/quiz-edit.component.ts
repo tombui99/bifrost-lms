@@ -12,11 +12,13 @@ import {
   BatchUpdateQuestionDto,
   BatchUpdateChoiceDto,
 } from '../api/model/models';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../core/language/language.service';
 
 @Component({
   selector: 'app-quiz-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   template: `
     <div class="min-h-screen bg-gray-50 py-8">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +35,9 @@ import {
                 />
               </svg>
             </button>
-            <h1 class="text-3xl font-extrabold text-gray-900">Manage Course Quiz</h1>
+            <h1 class="text-3xl font-extrabold text-gray-900">
+              {{ 'QUIZ.MANAGE_COURSE_QUIZ' | translate }}
+            </h1>
           </div>
           <div class="flex items-center space-x-3">
             @if (hasChanges()) {
@@ -42,7 +46,7 @@ import {
                 class="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-bold rounded-lg hover:bg-gray-50 transition-colors"
                 [disabled]="saving()"
               >
-                Discard
+                {{ 'QUIZ.DISCARD' | translate }}
               </button>
               <button
                 (click)="saveChanges()"
@@ -54,7 +58,9 @@ import {
                     class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
                   ></div>
                 }
-                <span>{{ saving() ? 'Saving...' : 'Save Changes' }}</span>
+                <span>{{
+                  saving() ? ('COMMON.SAVING' | translate) : ('QUIZ.SAVE_CHANGES' | translate)
+                }}</span>
               </button>
             }
             @if (quiz()) {
@@ -62,7 +68,7 @@ import {
                 (click)="deleteQuiz()"
                 class="px-4 py-2 bg-red-50 text-red-600 text-sm font-bold rounded-lg hover:bg-red-100 transition-colors"
               >
-                Delete Quiz
+                {{ 'QUIZ.DELETE_QUIZ' | translate }}
               </button>
             }
           </div>
@@ -92,16 +98,16 @@ import {
                 />
               </svg>
             </div>
-            <h2 class="text-xl font-bold text-gray-900 mb-2">No Quiz Found</h2>
-            <p class="text-gray-500 mb-6">
-              Create a final quiz to assess student learning at the end of this course.
-            </p>
+            <h2 class="text-xl font-bold text-gray-900 mb-2">
+              {{ 'QUIZ.NO_QUIZ_FOUND' | translate }}
+            </h2>
+            <p class="text-gray-500 mb-6">{{ 'QUIZ.CREATE_FINAL_QUIZ' | translate }}</p>
 
             <div class="max-w-md mx-auto space-y-4">
               <input
                 type="text"
                 [(ngModel)]="newQuizTitle"
-                placeholder="Quiz Title (e.g., Final Exam)"
+                [placeholder]="'QUIZ.QUIZ_TITLE_PLACEHOLDER' | translate"
                 class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-3 border"
               />
               <button
@@ -109,7 +115,7 @@ import {
                 [disabled]="!newQuizTitle || saving()"
                 class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition-transform active:scale-95 disabled:opacity-50"
               >
-                Create Quiz
+                {{ 'QUIZ.CREATE_QUIZ' | translate }}
               </button>
             </div>
           </div>
@@ -122,15 +128,51 @@ import {
                 <div>
                   <h2 class="text-xl font-bold text-gray-900">{{ editingQuiz()?.title }}</h2>
                   <p class="text-gray-500">
-                    {{ editingQuiz()?.description || 'No description provided.' }}
+                    {{ editingQuiz()?.description || ('QUIZ.NO_DESCRIPTION_PROVIDED' | translate) }}
                   </p>
                 </div>
                 <button
                   (click)="editingInfo.set(true)"
                   class="text-indigo-600 hover:text-indigo-800 text-sm font-bold"
                 >
-                  Edit Info
+                  {{ 'QUIZ.EDIT_INFO' | translate }}
                 </button>
+              </div>
+
+              <!-- Always Visible Settings -->
+              <div class="mt-4 pt-4 border-t border-gray-100 flex space-x-6">
+                <div class="flex-1 max-w-[200px]">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ 'QUIZ.TIME_LIMIT_MINS' | translate }}
+                  </label>
+                  <input
+                    type="number"
+                    [ngModel]="editingQuiz()?.timeLimitMinutes"
+                    (ngModelChange)="
+                      updateLocalQuizInfo({
+                        timeLimitMinutes: $event === null ? undefined : +$event,
+                      })
+                    "
+                    placeholder="30"
+                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border text-sm"
+                  />
+                </div>
+                <div class="flex-1 max-w-[200px]">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ 'QUIZ.QUESTIONS_TO_SERVE' | translate }}
+                  </label>
+                  <input
+                    type="number"
+                    [ngModel]="editingQuiz()?.numberOfQuestionsToServe"
+                    (ngModelChange)="
+                      updateLocalQuizInfo({
+                        numberOfQuestionsToServe: $event === null ? undefined : +$event,
+                      })
+                    "
+                    placeholder="10"
+                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border text-sm"
+                  />
+                </div>
               </div>
 
               @if (editingInfo()) {
@@ -143,8 +185,10 @@ import {
                   />
                   <textarea
                     [ngModel]="editingQuiz()?.description"
-                    (ngModelChange)="updateLocalQuizInfo({ description: $event })"
-                    placeholder="Description"
+                    (ngModelChange)="
+                      updateLocalQuizInfo({ description: $event === null ? undefined : $event })
+                    "
+                    [placeholder]="'COMMON.DESCRIPTION' | translate"
                     class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2 border"
                   ></textarea>
                   <div class="flex justify-end">
@@ -152,7 +196,7 @@ import {
                       (click)="editingInfo.set(false)"
                       class="px-4 py-2 text-sm text-indigo-600 font-bold"
                     >
-                      Done
+                      {{ 'QUIZ.DONE' | translate }}
                     </button>
                   </div>
                 </div>
@@ -163,7 +207,7 @@ import {
             <div class="space-y-4">
               <div class="flex items-center justify-between px-2">
                 <h3 class="text-lg font-bold text-gray-800">
-                  Questions ({{ editingQuiz()?.questions?.length || 0 }})
+                  {{ 'QUIZ.QUESTIONS' | translate }} ({{ editingQuiz()?.questions?.length || 0 }})
                 </h3>
                 <button
                   (click)="showAddQuestion.set(true)"
@@ -177,7 +221,7 @@ import {
                       d="M12 4v16m8-8H4"
                     />
                   </svg>
-                  <span>Add Question</span>
+                  <span>{{ 'QUIZ.ADD_QUESTION' | translate }}</span>
                 </button>
               </div>
 
@@ -185,11 +229,13 @@ import {
                 <div
                   class="bg-white rounded-2xl shadow-md border-2 border-indigo-100 p-6 animate-fadeIn"
                 >
-                  <h4 class="font-bold text-gray-900 mb-4">New Question</h4>
+                  <h4 class="font-bold text-gray-900 mb-4">
+                    {{ 'QUIZ.NEW_QUESTION' | translate }}
+                  </h4>
                   <input
                     type="text"
                     [(ngModel)]="newQuestionText"
-                    placeholder="Question Text"
+                    [placeholder]="'QUIZ.QUESTION_TEXT_PLACEHOLDER' | translate"
                     class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2 border mb-4"
                   />
                   <div class="flex justify-end space-x-2">
@@ -197,14 +243,14 @@ import {
                       (click)="showAddQuestion.set(false)"
                       class="px-3 py-1.5 text-sm text-gray-500"
                     >
-                      Cancel
+                      {{ 'COMMON.CANCEL' | translate }}
                     </button>
                     <button
                       (click)="addQuestionLocally()"
                       [disabled]="!newQuestionText"
                       class="px-3 py-1.5 bg-indigo-600 text-white text-sm font-bold rounded-lg shadow-sm disabled:opacity-50"
                     >
-                      Add Question
+                      {{ 'QUIZ.ADD_QUESTION' | translate }}
                     </button>
                   </div>
                 </div>
@@ -223,8 +269,8 @@ import {
                         type="text"
                         [ngModel]="question.text"
                         (ngModelChange)="updateQuestionText(i, $event)"
-                        class="font-bold text-gray-900 w-full border-none focus:ring-0 p-0 bg-transparent"
-                        placeholder="Type question here..."
+                        class="font-bold text-gray-900 w-full border-none focus:ring-0 p-0 bg-transparent mb-[2px]"
+                        [placeholder]="'QUIZ.TYPE_QUESTION_HERE' | translate"
                       />
                     </div>
                     <button
@@ -282,7 +328,7 @@ import {
                             @if (choice.isCorrect) {
                               <span
                                 class="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded shrink-0"
-                                >CORRECT</span
+                                >{{ 'QUIZ.CORRECT_MARK' | translate }}</span
                               >
                             }
                           </div>
@@ -313,7 +359,7 @@ import {
                         type="text"
                         [ngModel]="getNewChoice(i)"
                         (ngModelChange)="setNewChoice(i, $event)"
-                        placeholder="New Choice..."
+                        [placeholder]="'QUIZ.NEW_CHOICE_PLACEHOLDER' | translate"
                         class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-1.5 border text-sm"
                       />
                       <label class="flex items-center space-x-1 cursor-pointer select-none">
@@ -323,14 +369,16 @@ import {
                           (ngModelChange)="setIsCorrect(i, $event)"
                           class="rounded text-indigo-600"
                         />
-                        <span class="text-xs text-gray-500">Correct?</span>
+                        <span class="text-xs text-gray-500">{{
+                          'QUIZ.IS_CORRECT_Q' | translate
+                        }}</span>
                       </label>
                       <button
                         (click)="addChoiceLocally(i)"
                         [disabled]="!getNewChoice(i)"
                         class="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg hover:bg-indigo-100 disabled:opacity-50"
                       >
-                        Add
+                        {{ 'COMMON.ADD' | translate }}
                       </button>
                     </div>
                   </div>
@@ -364,6 +412,8 @@ export class QuizEditComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private quizzesService = inject(QuizzesService);
+  private translate = inject(TranslateService);
+  public languageService = inject(LanguageService);
 
   courseId!: number;
   quiz = signal<QuizDto | null>(null);
@@ -414,10 +464,15 @@ export class QuizEditComponent implements OnInit {
     });
   }
 
-  updateLocalQuizInfo(updates: { title?: string; description?: string }) {
+  updateLocalQuizInfo(updates: {
+    title?: string;
+    description?: string | null;
+    timeLimitMinutes?: number;
+    numberOfQuestionsToServe?: number;
+  }) {
     this.editingQuiz.update((q) => {
       if (!q) return q;
-      return { ...q, ...updates };
+      return { ...q, ...updates } as any;
     });
   }
 
@@ -520,6 +575,8 @@ export class QuizEditComponent implements OnInit {
     const dto: BatchUpdateQuizDto = {
       title: current.title!,
       description: current.description,
+      timeLimitMinutes: current.timeLimitMinutes,
+      numberOfQuestionsToServe: current.numberOfQuestionsToServe,
       questions: (current.questions || []).map((q) => ({
         id: q.id as any,
         text: q.text!,
@@ -539,13 +596,13 @@ export class QuizEditComponent implements OnInit {
       error: (err: any) => {
         console.error('Error saving quiz', err);
         this.saving.set(false);
-        alert('Failed to save changes. Please try again.');
+        alert(this.translate.instant('QUIZ.SAVE_FAILED'));
       },
     });
   }
 
   discardChanges() {
-    if (confirm('Discard all unsaved changes?')) {
+    if (confirm(this.translate.instant('QUIZ.DISCARD_CONFIRM'))) {
       this.editingQuiz.set(JSON.parse(JSON.stringify(this.quiz())));
       this.editingInfo.set(false);
     }
@@ -587,10 +644,7 @@ export class QuizEditComponent implements OnInit {
   }
 
   deleteQuiz() {
-    if (
-      !confirm('Are you sure you want to delete this quiz? All questions and choices will be lost.')
-    )
-      return;
+    if (!confirm(this.translate.instant('QUIZ.DELETE_QUIZ_CONFIRM'))) return;
 
     this.quizzesService.apiQuizzesIdDelete(this.quiz()!.id as any).subscribe({
       next: () => this.loadQuiz(),
@@ -600,7 +654,7 @@ export class QuizEditComponent implements OnInit {
 
   goBack() {
     if (this.hasChanges()) {
-      if (!confirm('You have unsaved changes. Are you sure you want to go back?')) {
+      if (!confirm(this.translate.instant('QUIZ.UNSAVED_CHANGES_CONFIRM'))) {
         return;
       }
     }

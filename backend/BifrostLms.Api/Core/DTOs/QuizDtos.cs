@@ -5,6 +5,8 @@ public class QuizDto
     public int Id { get; set; }
     public string Title { get; set; } = default!;
     public string? Description { get; set; }
+    public int? TimeLimitMinutes { get; set; }
+    public int? NumberOfQuestionsToServe { get; set; }
     public List<QuestionDto> Questions { get; set; } = new();
 }
 
@@ -26,6 +28,8 @@ public class CreateQuizDto
 {
     public string Title { get; set; } = default!;
     public string? Description { get; set; }
+    public int? TimeLimitMinutes { get; set; }
+    public int? NumberOfQuestionsToServe { get; set; }
 }
 
 public class CreateQuestionDto
@@ -61,6 +65,8 @@ public class BatchUpdateQuizDto
 {
     public string Title { get; set; } = default!;
     public string? Description { get; set; }
+    public int? TimeLimitMinutes { get; set; }
+    public int? NumberOfQuestionsToServe { get; set; }
     public List<BatchUpdateQuestionDto> Questions { get; set; } = new();
 }
 

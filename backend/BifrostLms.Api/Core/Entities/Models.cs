@@ -103,6 +103,8 @@ public class Quiz : BaseEntity
     public Course Course { get; set; } = default!;
     public string Title { get; set; } = default!;
     public string? Description { get; set; }
+    public int? TimeLimitMinutes { get; set; }
+    public int? NumberOfQuestionsToServe { get; set; }
     public List<Question> Questions { get; set; } = new();
 }
 

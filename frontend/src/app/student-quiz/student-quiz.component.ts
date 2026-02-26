@@ -1,9 +1,9 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudentProgressService } from '../api/api/studentProgress.service';
-import { QuizDto, QuizSubmissionDto, QuizResultDto } from '../api/model/models';
+import { QuizDto, QuizSubmissionDto, QuizResultDto, QuestionDto } from '../api/model/models';
 import { NotificationService } from '../services/notification.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../core/language/language.service';
@@ -113,7 +113,7 @@ import { LanguageService } from '../core/language/language.service';
         } @else if (quiz()) {
           <!-- Quiz Questions Style -->
           <div class="space-y-8 pb-20">
-            @for (question of quiz()!.questions; track question.id; let i = $index) {
+            @for (question of randomizedQuestions(); track question.id; let i = $index) {
               <div
                 class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-fadeIn"
                 [style.animation-delay]="i * 0.1 + 's'"
@@ -175,10 +175,30 @@ import { LanguageService } from '../core/language/language.service';
               class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-gray-100 p-4 z-40"
             >
               <div class="max-w-3xl mx-auto flex items-center justify-between">
-                <p class="text-sm font-medium text-gray-500">
-                  {{ answeredCount() }} {{ 'COMMON.OF' | translate }}
-                  {{ quiz()!.questions?.length || 0 }} {{ 'QUIZ.QUESTIONS_ANSWERED' | translate }}
-                </p>
+                <div>
+                  <p class="text-sm font-medium text-gray-500">
+                    {{ answeredCount() }} {{ 'COMMON.OF' | translate }}
+                    {{ randomizedQuestions().length }} {{ 'QUIZ.QUESTIONS_ANSWERED' | translate }}
+                  </p>
+                  @if (formattedTime()) {
+                    <p class="text-lg font-bold text-red-600 mt-1 flex items-center">
+                      <svg
+                        class="w-5 h-5 mr-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      {{ formattedTime() }}
+                    </p>
+                  }
+                </div>
                 <button
                   (click)="submitQuiz()"
                   [disabled]="!allAnswered() || submitting()"
@@ -215,7 +235,7 @@ import { LanguageService } from '../core/language/language.service';
     `,
   ],
 })
-export class StudentQuizComponent implements OnInit {
+export class StudentQuizComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private progressService = inject(StudentProgressService);
@@ -229,6 +249,10 @@ export class StudentQuizComponent implements OnInit {
   submitting = signal(false);
   result = signal<QuizResultDto | null>(null);
 
+  randomizedQuestions = signal<QuestionDto[]>([]);
+  timeRemaining = signal<number | null>(null);
+  timerInterval: any;
+
   answers = signal<{ [key: string]: any }>({});
 
   score = computed(() => {
@@ -241,10 +265,18 @@ export class StudentQuizComponent implements OnInit {
   });
 
   allAnswered = computed(() => {
-    const questions = this.quiz()?.questions;
+    const questions = this.randomizedQuestions();
     const currentAnswers = this.answers();
-    if (!questions) return false;
+    if (!questions || questions.length === 0) return false;
     return questions.every((q) => currentAnswers[q.id as any] !== undefined);
+  });
+
+  formattedTime = computed(() => {
+    const totalSeconds = this.timeRemaining();
+    if (totalSeconds === null) return null;
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   });
 
   ngOnInit() {
@@ -255,11 +287,54 @@ export class StudentQuizComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.clearTimer();
+  }
+
   loadQuiz() {
     this.loading.set(true);
     this.progressService.apiStudentProgressQuizQuizIdGet(this.quizId).subscribe({
       next: (data) => {
         this.quiz.set(data);
+
+        // Randomize questions
+        let questions = [...(data.questions || [])];
+        for (let i = questions.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [questions[i], questions[j]] = [questions[j], questions[i]];
+        }
+
+        let targetCount = data.numberOfQuestionsToServe as any as number;
+        // The generator might map it differently but it's a number conceptually
+        if (targetCount && targetCount > 0 && targetCount < questions.length) {
+          questions = questions.slice(0, targetCount);
+        }
+
+        this.randomizedQuestions.set(questions);
+
+        const timeLimit = data.timeLimitMinutes as any as number;
+        if (timeLimit && timeLimit > 0) {
+          const storageKey = `bifrost_quiz_${this.quizId}_endTime`;
+          let endTime = parseInt(localStorage.getItem(storageKey) || '0', 10);
+          const now = Date.now();
+
+          if (!endTime) {
+            // First time opening the quiz
+            endTime = now + timeLimit * 60 * 1000;
+            localStorage.setItem(storageKey, endTime.toString());
+          }
+
+          const remainingSeconds = Math.floor((endTime - now) / 1000);
+
+          if (remainingSeconds > 0) {
+            this.timeRemaining.set(remainingSeconds);
+            this.startTimer();
+          } else {
+            // The time has already expired while they were away
+            this.timeRemaining.set(0);
+            this.submitQuiz(); // Auto submit immediately
+          }
+        }
         this.loading.set(false);
       },
       error: (err: any) => {
@@ -278,6 +353,27 @@ export class StudentQuizComponent implements OnInit {
     this.answers.update((prev) => ({ ...prev, [questionId]: choiceId }));
   }
 
+  startTimer() {
+    this.clearTimer();
+    this.timerInterval = setInterval(() => {
+      const remaining = this.timeRemaining();
+      if (remaining !== null && remaining > 0) {
+        this.timeRemaining.set(remaining - 1);
+        if (remaining - 1 <= 0) {
+          this.clearTimer();
+          this.submitQuiz(); // Auto submit
+        }
+      }
+    }, 1000);
+  }
+
+  clearTimer() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+  }
+
   submitQuiz() {
     if (this.submitting()) return;
 
@@ -290,6 +386,8 @@ export class StudentQuizComponent implements OnInit {
     };
 
     this.submitting.set(true);
+    this.clearTimer();
+    localStorage.removeItem(`bifrost_quiz_${this.quizId}_endTime`);
     this.progressService.apiStudentProgressQuizQuizIdSubmitPost(this.quizId, submission).subscribe({
       next: (res) => {
         this.result.set(res);
@@ -311,6 +409,8 @@ export class StudentQuizComponent implements OnInit {
   resetQuiz() {
     this.result.set(null);
     this.answers.set({});
+    localStorage.removeItem(`bifrost_quiz_${this.quizId}_endTime`);
+    this.loadQuiz();
   }
 
   goBack() {

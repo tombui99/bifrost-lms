@@ -7,6 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { BatchUpdateChoiceDtoId } from './batchUpdateChoiceDtoId';
 import { ApiCoursesIdGetIdParameter } from './apiCoursesIdGetIdParameter';
 import { QuestionDto } from './questionDto';
 
@@ -15,6 +16,8 @@ export interface QuizDto {
     id?: ApiCoursesIdGetIdParameter;
     title?: string;
     description?: string | null;
+    timeLimitMinutes?: BatchUpdateChoiceDtoId | null;
+    numberOfQuestionsToServe?: BatchUpdateChoiceDtoId | null;
     questions?: Array<QuestionDto>;
 }
 

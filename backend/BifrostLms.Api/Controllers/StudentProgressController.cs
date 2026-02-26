@@ -253,6 +253,8 @@ public class StudentProgressController : ControllerBase
             Id = quiz.Id,
             Title = quiz.Title,
             Description = quiz.Description,
+            TimeLimitMinutes = quiz.TimeLimitMinutes,
+            NumberOfQuestionsToServe = quiz.NumberOfQuestionsToServe,
             Questions = quiz.Questions.Select(q => new QuestionDto
             {
                 Id = q.Id,
