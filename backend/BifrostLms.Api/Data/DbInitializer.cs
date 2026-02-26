@@ -17,7 +17,7 @@ public static class DbInitializer
         await context.Database.MigrateAsync();
 
         // 1. Seed Roles
-        string[] roles = { "Admin", "Teacher", "Student" };
+        string[] roles = { "Admin", "TenantAdmin", "Teacher", "Student" };
         foreach (var role in roles)
         {
             if (!await roleManager.RoleExistsAsync(role))

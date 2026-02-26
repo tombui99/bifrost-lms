@@ -1,8 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthenticationService } from '../core/auth/auth.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AdminService } from '../api/api/admin.service';
+import { Tenant } from '../api/model/models';
+import { BASE_PATH } from '../api/variables';
 
 @Component({
   selector: 'app-admin-layout',
@@ -14,20 +17,26 @@ import { TranslateModule } from '@ngx-translate/core';
       <aside class="w-72 bg-indigo-900 text-white flex flex-col shadow-2xl z-20">
         <div class="p-8 border-b border-white/10">
           <div class="flex items-center gap-3">
-            <div class="bg-indigo-600 p-2 rounded-xl shadow-lg ring-1 ring-white/20">
-              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2.5"
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 4.168 6.253v13C4.168 19.333 5.477 19 7.5 19s3.332.333 4.168.618m4.332 0c.835-.285 1.668-.618 4.168-.618 1.667 0 3.253.477 3.253.618v-13C19.832 5.477 18.246 5 16.5 5c-1.668 0-3.253.477-4.168.618"
-                />
-              </svg>
+            <div class="p-2 ">
+              @if (tenant()?.logoUrl) {
+                <img [src]="basePath + tenant()?.logoUrl" class="w-8 h-8 object-contain" />
+              } @else {
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 4.168 6.253v13C4.168 19.333 5.477 19 7.5 19s3.332.333 4.168.618m4.332 0c.835-.285 1.668-.618 4.168-.618 1.667 0 3.253.477 3.253.618v-13C19.832 5.477 18.246 5 16.5 5c-1.668 0-3.253.477-4.168.618"
+                  />
+                </svg>
+              }
             </div>
             <div>
-              <h1 class="text-2xl font-black italic tracking-tight">Bifrost</h1>
+              <h1 class="text-2xl font-black italic tracking-tight truncate max-w-[140px]">
+                {{ tenant()?.name || 'Bifrost LMS' }}
+              </h1>
               <p class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-300">
-                Admin Panel
+                {{ 'ADMIN.PANEL' | translate }}
               </p>
             </div>
           </div>
@@ -52,66 +61,51 @@ import { TranslateModule } from '@ngx-translate/core';
                 d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
               />
             </svg>
-            User Accounts
+            {{ 'ADMIN.USER_ACCOUNTS' | translate }}
           </a>
-          <a
-            routerLink="/admin/tenants"
-            routerLinkActive="bg-white/10 text-white shadow-lg"
-            class="flex items-center gap-4 px-5 py-4 rounded-2xl text-indigo-100 hover:bg-white/5 transition-all group font-bold"
-          >
-            <svg
-              class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          @if (userRole() === 'Admin') {
+            <a
+              routerLink="/admin/tenants"
+              routerLinkActive="bg-white/10 text-white shadow-lg"
+              class="flex items-center gap-4 px-5 py-4 rounded-2xl text-indigo-100 hover:bg-white/5 transition-all group font-bold"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-              />
-            </svg>
-            Tenants / Companies
-          </a>
-          <a
-            routerLink="/admin/content"
-            routerLinkActive="bg-white/10 text-white shadow-lg"
-            class="flex items-center gap-4 px-5 py-4 rounded-2xl text-indigo-100 hover:bg-white/5 transition-all group font-bold"
-          >
-            <svg
-              class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+              <svg
+                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
+              {{ 'ADMIN.TENANTS_COMPANIES' | translate }}
+            </a>
+            <a
+              routerLink="/admin/content"
+              routerLinkActive="bg-white/10 text-white shadow-lg"
+              class="flex items-center gap-4 px-5 py-4 rounded-2xl text-indigo-100 hover:bg-white/5 transition-all group font-bold"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-              />
-            </svg>
-            System Content
-          </a>
+              <svg
+                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012-2v2M7 7h10"
+                />
+              </svg>
+              {{ 'ADMIN.SYSTEM_CONTENT' | translate }}
+            </a>
+          }
         </nav>
-
-        <div class="p-6 border-t border-white/10">
-          <button
-            (click)="logout()"
-            class="w-full flex items-center justify-center gap-2 px-4 py-4 rounded-2xl bg-red-500/10 text-red-300 hover:bg-red-500 hover:text-white transition-all font-black text-sm uppercase tracking-widest"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-            Sign Out
-          </button>
-        </div>
       </aside>
 
       <!-- Main Content -->
@@ -119,18 +113,62 @@ import { TranslateModule } from '@ngx-translate/core';
         <header
           class="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-10 shrink-0"
         >
-          <h2 class="text-xl font-black text-gray-900 tracking-tight italic">Management Console</h2>
-          <div class="flex items-center gap-4">
-            <div class="text-right">
-              <p class="text-xs font-black text-gray-900 leading-none">Global Admin</p>
-              <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mt-1">
-                Super User
-              </p>
-            </div>
+          <h2 class="text-xl font-black text-gray-900 tracking-tight italic">
+            {{ 'ADMIN.MANAGEMENT_CONSOLE' | translate }}
+          </h2>
+          <div class="flex items-center gap-6">
+            <!-- Language Toggle -->
             <div
-              class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center border-2 border-indigo-600 shadow-sm overflow-hidden"
+              class="flex items-center gap-1 p-1 bg-gray-50 rounded-full border border-gray-200 shadow-inner"
             >
-              <span class="text-sm font-black text-indigo-600">AD</span>
+              <button
+                (click)="switchLanguage('en')"
+                class="px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all"
+                [class.bg-white]="currentLang() === 'en'"
+                [class.shadow-md]="currentLang() === 'en'"
+                [class.text-indigo-600]="currentLang() === 'en'"
+                [class.text-gray-400]="currentLang() !== 'en'"
+              >
+                EN
+              </button>
+              <button
+                (click)="switchLanguage('vi')"
+                class="px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all"
+                [class.bg-white]="currentLang() === 'vi'"
+                [class.shadow-md]="currentLang() === 'vi'"
+                [class.text-indigo-600]="currentLang() === 'vi'"
+                [class.text-gray-400]="currentLang() !== 'vi'"
+              >
+                VI
+              </button>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="flex items-center gap-4">
+              <div class="text-right">
+                <p class="text-sm font-black text-gray-900 leading-none">
+                  {{
+                    (userRole() === 'Admin' ? 'ADMIN.GLOBAL_ADMIN' : 'ADMIN.TENANT_ADMIN')
+                      | translate
+                  }}
+                </p>
+                <p class="text-xs font-bold text-gray-500 mt-1 lowercase">
+                  {{ username() }}
+                </p>
+                <button
+                  (click)="logout()"
+                  class="text-[10px] font-black text-red-500 hover:text-red-600 uppercase tracking-widest mt-1 transition-colors"
+                >
+                  {{ 'ADMIN.SIGN_OUT' | translate }}
+                </button>
+              </div>
+              <div
+                class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center border-2 border-white shadow-md ring-1 ring-gray-100 overflow-hidden"
+              >
+                <span class="text-sm font-black text-indigo-600">
+                  {{ (username() || 'AD').substring(0, 2).toUpperCase() }}
+                </span>
+              </div>
             </div>
           </div>
         </header>
@@ -159,11 +197,39 @@ import { TranslateModule } from '@ngx-translate/core';
     `,
   ],
 })
-export class AdminLayoutComponent {
+export class AdminLayoutComponent implements OnInit {
+  basePath = inject(BASE_PATH);
   private authService = inject(AuthenticationService);
   private router = inject(Router);
+  private translate = inject(TranslateService);
+  private adminService = inject(AdminService);
+
+  userRole = this.authService.userRole;
+  username = this.authService.username;
+  tenant = signal<Tenant | null>(null);
+  currentLang = signal<string>(localStorage.getItem('preferredLang') || 'vi');
+
+  ngOnInit() {
+    // Apply persisted language immediately
+    this.translate.use(this.currentLang());
+
+    // Fetch tenant data if user belongs to one
+    const tenantId = this.authService.getTenantId();
+    if (tenantId) {
+      this.adminService.apiAdminTenantsGet().subscribe((tenants) => {
+        const t = tenants.find((x: any) => x.id === tenantId);
+        if (t) this.tenant.set(t);
+      });
+    }
+  }
 
   logout() {
     this.authService.logout();
+  }
+
+  switchLanguage(lang: string) {
+    this.translate.use(lang);
+    this.currentLang.set(lang);
+    localStorage.setItem('preferredLang', lang);
   }
 }

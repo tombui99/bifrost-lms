@@ -3,18 +3,22 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminService } from '../api/api/admin.service';
 import { UserDisplayDto, Tenant } from '../api/model/models';
+import { AuthenticationService } from '../core/auth/auth.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   template: `
     <div class="space-y-8 animate-fade-in">
       <div class="flex justify-between items-end">
         <div>
-          <h3 class="text-3xl font-black text-gray-900 tracking-tight italic">User Accounts</h3>
+          <h3 class="text-3xl font-black text-gray-900 tracking-tight italic">
+            {{ 'ADMIN.USER_ACCOUNTS_TITLE' | translate }}
+          </h3>
           <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mt-2">
-            Manage platform access for teachers and students
+            {{ 'ADMIN.USER_ACCOUNTS_DESC' | translate }}
           </p>
         </div>
         <button
@@ -29,7 +33,7 @@ import { UserDisplayDto, Tenant } from '../api/model/models';
               d="M12 6v6m0 0v6m0-6h6m-6 0H6"
             />
           </svg>
-          Create New User
+          {{ 'ADMIN.CREATE_NEW_USER' | translate }}
         </button>
       </div>
 
@@ -69,42 +73,53 @@ import { UserDisplayDto, Tenant } from '../api/model/models';
                     'bg-blue-100 text-blue-700': user.role === 'Student',
                   }"
                 >
-                  {{ user.role }}
+                  {{
+                    (user.role === 'Admin'
+                      ? 'AUTH.ADMIN'
+                      : user.role === 'Teacher'
+                        ? 'AUTH.TEACHER'
+                        : user.role === 'Student'
+                          ? 'AUTH.STUDENT'
+                          : 'ADMIN.TENANT_ADMIN'
+                    ) | translate
+                  }}
                 </span>
                 <span
                   class="px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 text-[10px] font-black uppercase tracking-widest shadow-sm"
                 >
-                  {{ user.tenantId }}
+                  {{ user.tenantId || ('ADMIN.GLOBAL_ADMIN' | translate) }}
                 </span>
               </div>
 
               <div class="flex gap-2">
-                <button
-                  (click)="onEditUser(user)"
-                  class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                </button>
-                <button
-                  (click)="onDeleteUser(user.id!)"
-                  class="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-all"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </button>
+                @if (user.id !== currentUserId()) {
+                  <button
+                    (click)="onEditUser(user)"
+                    class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    (click)="onDeleteUser(user.id!)"
+                    class="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                }
               </div>
             </div>
           </div>
@@ -127,10 +142,13 @@ import { UserDisplayDto, Tenant } from '../api/model/models';
                 class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"
               ></div>
               <h4 class="text-3xl font-black italic tracking-tight relative">
-                {{ isEditMode() ? 'Edit Account' : 'New Account' }}
+                {{ (isEditMode() ? 'ADMIN.EDIT_ACCOUNT' : 'ADMIN.NEW_ACCOUNT') | translate }}
               </h4>
               <p class="text-sm font-bold text-indigo-300 uppercase tracking-widest mt-1 relative">
-                {{ isEditMode() ? 'Update Credentials' : 'Identity Registration' }}
+                {{
+                  (isEditMode() ? 'ADMIN.UPDATE_CREDENTIALS' : 'ADMIN.IDENTITY_REGISTRATION')
+                    | translate
+                }}
               </p>
             </div>
 
@@ -139,7 +157,7 @@ import { UserDisplayDto, Tenant } from '../api/model/models';
                 <div>
                   <label
                     class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
-                    >Full Name</label
+                    >{{ 'ADMIN.FULL_NAME' | translate }}</label
                   >
                   <input
                     formControlName="fullName"
@@ -148,26 +166,31 @@ import { UserDisplayDto, Tenant } from '../api/model/models';
                     placeholder="John Doe"
                   />
                 </div>
-                <div>
-                  <label
-                    class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
-                    >Account Role</label
-                  >
-                  <select
-                    formControlName="role"
-                    class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-100 text-gray-900 font-bold transition-all appearance-none cursor-pointer"
-                  >
-                    <option value="Student">Student</option>
-                    <option value="Teacher">Teacher</option>
-                    <option value="Admin">Admin</option>
-                  </select>
-                </div>
+                @if (!isEditMode() || selectedUserId() !== currentUserId()) {
+                  <div>
+                    <label
+                      class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
+                      >{{ 'ADMIN.ACCOUNT_ROLE' | translate }}</label
+                    >
+                    <select
+                      formControlName="role"
+                      class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-100 text-gray-900 font-bold transition-all appearance-none cursor-pointer"
+                    >
+                      <option value="Student">{{ 'AUTH.STUDENT' | translate }}</option>
+                      <option value="Teacher">{{ 'AUTH.TEACHER' | translate }}</option>
+                      @if (userRole() === 'Admin') {
+                        <option value="Admin">{{ 'AUTH.ADMIN' | translate }}</option>
+                        <option value="TenantAdmin">{{ 'ADMIN.TENANT_ADMIN' | translate }}</option>
+                      }
+                    </select>
+                  </div>
+                }
               </div>
 
               <div>
                 <label
                   class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
-                  >Username</label
+                  >{{ 'ADMIN.USERNAME' | translate }}</label
                 >
                 <input
                   formControlName="username"
@@ -183,7 +206,7 @@ import { UserDisplayDto, Tenant } from '../api/model/models';
                   <div>
                     <label
                       class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
-                      >Secure Password</label
+                      >{{ 'ADMIN.SECURE_PASSWORD' | translate }}</label
                     >
                     <input
                       formControlName="password"
@@ -192,36 +215,42 @@ import { UserDisplayDto, Tenant } from '../api/model/models';
                       placeholder="********"
                     />
                   </div>
+                  @if (userRole() === 'Admin') {
+                    <div>
+                      <label
+                        class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
+                        >{{ 'ADMIN.TENANT_ID' | translate }}</label
+                      >
+                      <select
+                        formControlName="tenantId"
+                        [attr.disabled]="userRole() !== 'Admin' ? true : null"
+                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-100 text-gray-900 font-bold transition-all appearance-none cursor-pointer disabled:opacity-50"
+                      >
+                        @for (tenant of tenants(); track tenant.id) {
+                          <option [value]="tenant.id">{{ tenant.name }}</option>
+                        }
+                      </select>
+                    </div>
+                  }
+                </div>
+              } @else {
+                @if (userRole() === 'Admin') {
                   <div>
                     <label
                       class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
-                      >Tenant ID</label
+                      >{{ 'ADMIN.TENANT_ASSIGNMENT' | translate }}</label
                     >
                     <select
                       formControlName="tenantId"
-                      class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-100 text-gray-900 font-bold transition-all appearance-none cursor-pointer"
+                      [attr.disabled]="userRole() !== 'Admin' ? true : null"
+                      class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-100 text-gray-900 font-bold transition-all appearance-none cursor-pointer disabled:opacity-50"
                     >
                       @for (tenant of tenants(); track tenant.id) {
                         <option [value]="tenant.id">{{ tenant.name }}</option>
                       }
                     </select>
                   </div>
-                </div>
-              } @else {
-                <div>
-                  <label
-                    class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
-                    >Tenant Assignment</label
-                  >
-                  <select
-                    formControlName="tenantId"
-                    class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-100 text-gray-900 font-bold transition-all appearance-none cursor-pointer"
-                  >
-                    @for (tenant of tenants(); track tenant.id) {
-                      <option [value]="tenant.id">{{ tenant.name }}</option>
-                    }
-                  </select>
-                </div>
+                }
               }
 
               <div class="flex gap-4 pt-6">
@@ -230,14 +259,14 @@ import { UserDisplayDto, Tenant } from '../api/model/models';
                   (click)="showCreateModal.set(false)"
                   class="flex-1 px-8 py-5 rounded-2xl font-black text-xs uppercase tracking-widest text-gray-400 hover:bg-gray-50 transition-all"
                 >
-                  Cancel
+                  {{ 'COMMON.CANCEL' | translate }}
                 </button>
                 <button
                   type="submit"
                   [disabled]="userForm.invalid"
                   class="flex-2 px-10 py-5 rounded-2xl bg-indigo-600 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-indigo-600/20 hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50"
                 >
-                  {{ isEditMode() ? 'Save Changes' : 'Confirm & Create' }}
+                  {{ (isEditMode() ? 'QUIZ.SAVE_CHANGES' : 'ADMIN.CONFIRM_CREATE') | translate }}
                 </button>
               </div>
             </form>
@@ -256,7 +285,12 @@ export class UserManagementComponent implements OnInit {
   userForm: FormGroup;
 
   private adminService = inject(AdminService);
+  private authService = inject(AuthenticationService);
   private fb = inject(FormBuilder);
+  private translate = inject(TranslateService);
+
+  userRole = this.authService.userRole;
+  currentUserId = signal<string | null>(null);
 
   constructor() {
     this.userForm = this.fb.group({
@@ -269,6 +303,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.currentUserId.set(this.authService.getUserId());
     this.loadData();
   }
 
@@ -276,7 +311,9 @@ export class UserManagementComponent implements OnInit {
     this.adminService.apiAdminUsersGet().subscribe((users) => this.users.set(users));
     this.adminService.apiAdminTenantsGet().subscribe((tenants) => {
       this.tenants.set(tenants);
-      if (tenants.length > 0 && !this.userForm.get('tenantId')?.value) {
+      if (this.userRole() !== 'Admin') {
+        this.userForm.patchValue({ tenantId: this.authService.getTenantId() });
+      } else if (tenants.length > 0 && !this.userForm.get('tenantId')?.value) {
         this.userForm.patchValue({ tenantId: tenants[0].id });
       }
     });
@@ -285,7 +322,11 @@ export class UserManagementComponent implements OnInit {
   prepareCreate() {
     this.isEditMode.set(false);
     this.selectedUserId.set(null);
-    this.userForm.reset({ role: 'Student', tenantId: this.tenants()[0]?.id });
+    this.userForm.reset({
+      role: 'Student',
+      tenantId:
+        this.userRole() === 'Admin' ? this.tenants()[0]?.id : this.authService.getTenantId(),
+    });
     this.userForm.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
     this.userForm.get('password')?.updateValueAndValidity();
     this.showCreateModal.set(true);
@@ -307,16 +348,18 @@ export class UserManagementComponent implements OnInit {
   }
 
   onDeleteUser(id: string) {
-    if (confirm('Are you sure you want to delete this user?')) {
+    const confirmMsg = this.translate.instant('COMMON.ARE_YOU_SURE_DELETE');
+    if (confirm(confirmMsg + '?')) {
       this.adminService.apiAdminUsersIdDelete(id).subscribe(() => this.loadData());
     }
   }
 
   onSubmit() {
     if (this.userForm.valid) {
+      const formValue = { ...this.userForm.getRawValue() };
       const request = this.isEditMode()
-        ? this.adminService.apiAdminUsersIdPut(this.selectedUserId()!, this.userForm.value)
-        : this.adminService.apiAdminUsersPost(this.userForm.value);
+        ? this.adminService.apiAdminUsersIdPut(this.selectedUserId()!, formValue)
+        : this.adminService.apiAdminUsersPost(formValue);
 
       request.subscribe(() => {
         this.showCreateModal.set(false);

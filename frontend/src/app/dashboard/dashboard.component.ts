@@ -136,7 +136,7 @@ import { TranslateModule } from '@ngx-translate/core';
       }
 
       <!-- Admin Panel Widget -->
-      @if (authService.userRole() === 'Admin') {
+      @if (authService.userRole() === 'Admin' || authService.userRole() === 'TenantAdmin') {
         <div
           (click)="navigateToAdmin()"
           class="max-w-sm bg-indigo-900 overflow-hidden shadow-2xl shadow-indigo-200 rounded-3xl hover:shadow-indigo-300 transition-all duration-300 cursor-pointer border-t-4 border-indigo-400 group active:scale-95 translate-y-0 hover:-translate-y-2"

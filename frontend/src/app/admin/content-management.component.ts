@@ -3,18 +3,21 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AdminService } from '../api/api/admin.service';
 import { ContentDisplayDto, Tenant } from '../api/model/models';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-content-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   template: `
     <div class="space-y-8 animate-fade-in">
       <div class="flex justify-between items-end">
         <div>
-          <h3 class="text-3xl font-black text-gray-900 tracking-tight italic">Course Management</h3>
+          <h3 class="text-3xl font-black text-gray-900 tracking-tight italic">
+            {{ 'ADMIN.COURSE_MANAGEMENT_TITLE' | translate }}
+          </h3>
           <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mt-2">
-            Assign and share courses across multiple tenants
+            {{ 'ADMIN.COURSE_MANAGEMENT_DESC' | translate }}
           </p>
         </div>
       </div>
@@ -54,7 +57,7 @@ import { ContentDisplayDto, Tenant } from '../api/model/models';
             <div class="mt-8 space-y-4">
               <div>
                 <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">
-                  Primary Owner
+                  {{ 'ADMIN.PRIMARY_OWNER' | translate }}
                 </p>
                 <span
                   class="px-4 py-2 rounded-full bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest shadow-md shadow-indigo-600/20"
@@ -65,7 +68,7 @@ import { ContentDisplayDto, Tenant } from '../api/model/models';
 
               <div>
                 <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">
-                  Shared With
+                  {{ 'ADMIN.SHARED_WITH' | translate }}
                 </p>
                 <div class="flex flex-wrap gap-2">
                   @if (item.sharedTenantIds && item.sharedTenantIds.length > 0) {
@@ -77,7 +80,9 @@ import { ContentDisplayDto, Tenant } from '../api/model/models';
                       </span>
                     }
                   } @else {
-                    <span class="text-[10px] font-bold text-gray-300 italic">No other tenants</span>
+                    <span class="text-[10px] font-bold text-gray-300 italic">{{
+                      'ADMIN.NO_OTHER_TENANTS' | translate
+                    }}</span>
                   }
                 </div>
               </div>
@@ -88,7 +93,9 @@ import { ContentDisplayDto, Tenant } from '../api/model/models';
                 (click)="onOpenEditModal(item)"
                 class="w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-4 rounded-2xl hover:bg-indigo-600 transition-all shadow-lg active:scale-[0.98] group"
               >
-                <span class="text-xs font-black uppercase tracking-widest">Manage Access</span>
+                <span class="text-xs font-black uppercase tracking-widest">{{
+                  'ADMIN.MANAGE_ACCESS' | translate
+                }}</span>
                 <svg
                   class="w-4 h-4 group-hover:translate-x-1 transition-transform"
                   fill="none"
@@ -124,10 +131,10 @@ import { ContentDisplayDto, Tenant } from '../api/model/models';
                 class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"
               ></div>
               <h4 class="text-4xl font-black italic tracking-tight relative leading-none">
-                Course Access
+                {{ 'ADMIN.COURSE_ACCESS' | translate }}
               </h4>
               <p class="text-sm font-bold text-indigo-300 uppercase tracking-widest mt-2 relative">
-                Configure Global Availability
+                {{ 'ADMIN.CONFIGURE_GLOBAL_AVAILABILITY' | translate }}
               </p>
             </div>
 
@@ -150,7 +157,7 @@ import { ContentDisplayDto, Tenant } from '../api/model/models';
                 </div>
                 <div class="min-w-0">
                   <p class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 mb-1">
-                    Editing Course Access
+                    {{ 'ADMIN.EDITING_COURSE_ACCESS' | translate }}
                   </p>
                   <h5 class="text-2xl font-black text-indigo-900 italic leading-tight truncate">
                     {{ selectedItem()?.title }}
@@ -163,7 +170,8 @@ import { ContentDisplayDto, Tenant } from '../api/model/models';
                 <label
                   class="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1 mb-4"
                 >
-                  Primary Owner <span class="text-indigo-600">(Strict Isolation)</span>
+                  {{ 'ADMIN.PRIMARY_OWNER' | translate }}
+                  <span class="text-indigo-600">({{ 'ADMIN.STRICT_ISOLATION' | translate }})</span>
                 </label>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   @for (tenant of tenants(); track tenant.id) {
@@ -217,7 +225,8 @@ import { ContentDisplayDto, Tenant } from '../api/model/models';
                 <label
                   class="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1 mb-4"
                 >
-                  Shared Access <span class="text-gray-600">(Allow other tenants to see)</span>
+                  {{ 'ADMIN.SHARED_ACCESS' | translate }}
+                  <span class="text-gray-600">({{ 'ADMIN.ALLOW_OTHER_TENANTS' | translate }})</span>
                 </label>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   @for (tenant of tenants(); track tenant.id) {
@@ -261,13 +270,13 @@ import { ContentDisplayDto, Tenant } from '../api/model/models';
                 (click)="showModal.set(false)"
                 class="flex-1 py-5 rounded-2xl font-black text-xs uppercase tracking-widest text-gray-400 hover:bg-gray-100 transition-all font-inter"
               >
-                Cancel
+                {{ 'COMMON.CANCEL' | translate }}
               </button>
               <button
                 (click)="saveChanges()"
                 class="flex-1 py-5 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-600/20"
               >
-                Save Permissions
+                {{ 'ADMIN.SAVE_PERMISSIONS' | translate }}
               </button>
             </div>
           </div>
@@ -298,6 +307,7 @@ export class ContentManagementComponent implements OnInit {
   sharedTenants = signal<string[]>([]);
 
   private adminService = inject(AdminService);
+  private translate = inject(TranslateService);
 
   ngOnInit() {
     this.loadData();

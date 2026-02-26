@@ -5,20 +5,21 @@ import { AdminService } from '../api/api/admin.service';
 import { Tenant } from '../api/model/models';
 import { HttpClient } from '@angular/common/http';
 import { BASE_PATH } from '../api/variables';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tenant-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   template: `
     <div class="space-y-8 animate-fade-in">
       <div class="flex justify-between items-end">
         <div>
           <h3 class="text-3xl font-black text-gray-900 tracking-tight italic">
-            Tenants / Companies
+            {{ 'ADMIN.TENANTS_COMPANIES' | translate }}
           </h3>
           <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mt-2">
-            Manage isolated business environments
+            {{ 'ADMIN.TENANT_DESC' | translate }}
           </p>
         </div>
         <button
@@ -33,7 +34,7 @@ import { BASE_PATH } from '../api/variables';
               d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2-2h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
             />
           </svg>
-          Register New Tenant
+          {{ 'ADMIN.REGISTER_NEW_TENANT' | translate }}
         </button>
       </div>
 
@@ -44,32 +45,32 @@ import { BASE_PATH } from '../api/variables';
               <th
                 class="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"
               >
-                Logo
+                {{ 'ADMIN.LOGO' | translate }}
               </th>
               <th
                 class="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"
               >
-                Tenant ID
+                {{ 'ADMIN.TENANT_ID' | translate }}
               </th>
               <th
                 class="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"
               >
-                Company Name
+                {{ 'ADMIN.COMPANY_NAME' | translate }}
               </th>
               <th
                 class="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"
               >
-                Domain
+                {{ 'ADMIN.DOMAIN' | translate }}
               </th>
               <th
                 class="px-8 py-6 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"
               >
-                Status
+                {{ 'COMMON.STATUS' | translate }}
               </th>
               <th
                 class="px-8 py-6 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"
               >
-                Actions
+                {{ 'COMMON.ACTIONS' | translate }}
               </th>
             </tr>
           </thead>
@@ -112,7 +113,11 @@ import { BASE_PATH } from '../api/variables';
                         : 'bg-red-100 text-red-700'
                     "
                   >
-                    {{ tenant.isActive ? 'Active' : 'Disabled' }}
+                    {{
+                      tenant.isActive
+                        ? ('COURSE.AVAILABLE' | translate)
+                        : ('COMMON.DRAFT' | translate)
+                    }}
                   </span>
                 </td>
                 <td class="px-8 py-6 text-right">
@@ -152,10 +157,16 @@ import { BASE_PATH } from '../api/variables';
                 class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"
               ></div>
               <h4 class="text-3xl font-black italic tracking-tight relative">
-                {{ isEditMode() ? 'Edit Tenant' : 'New Tenant' }}
+                {{
+                  (isEditMode() ? 'ADMIN.ENTERPRISE_UPDATE' : 'ADMIN.ENTERPRISE_REGISTRATION')
+                    | translate
+                }}
               </h4>
               <p class="text-sm font-bold text-indigo-300 uppercase tracking-widest mt-1 relative">
-                {{ isEditMode() ? 'Update Enterprise' : 'Enterprise Registration' }}
+                {{
+                  (isEditMode() ? 'ADMIN.ENTERPRISE_UPDATE' : 'ADMIN.ENTERPRISE_REGISTRATION')
+                    | translate
+                }}
               </p>
             </div>
 
@@ -223,10 +234,10 @@ import { BASE_PATH } from '../api/variables';
 
                 <div class="flex-1 space-y-2">
                   <h5 class="text-sm font-black text-gray-900 uppercase tracking-wider">
-                    Company Logo
+                    {{ 'ADMIN.COMPANY_LOGO' | translate }}
                   </h5>
                   <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest italic">
-                    Attach your brand identity
+                    {{ 'ADMIN.BRAND_IDENTITY_DESC' | translate }}
                   </p>
                   <div class="flex items-center gap-3 pt-1">
                     <button
@@ -234,7 +245,7 @@ import { BASE_PATH } from '../api/variables';
                       (click)="logoInput.click()"
                       class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 hover:text-indigo-700 transition-colors"
                     >
-                      Change Logo
+                      {{ 'ADMIN.CHANGE_LOGO' | translate }}
                     </button>
                     @if (currentLogoUrl() || logoPreview()) {
                       <span class="text-gray-300 text-[10px]">•</span>
@@ -243,7 +254,7 @@ import { BASE_PATH } from '../api/variables';
                         (click)="deleteLogo()"
                         class="text-[10px] font-black uppercase tracking-[0.2em] text-red-500 hover:text-red-600 transition-colors"
                       >
-                        Delete
+                        {{ 'COMMON.DELETE' | translate }}
                       </button>
                     }
                   </div>
@@ -254,7 +265,7 @@ import { BASE_PATH } from '../api/variables';
                 <div>
                   <label
                     class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
-                    >Unique Identifier</label
+                    >{{ 'ADMIN.UNIQUE_IDENTIFIER' | translate }}</label
                   >
                   <input
                     formControlName="id"
@@ -267,7 +278,7 @@ import { BASE_PATH } from '../api/variables';
                 <div>
                   <label
                     class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
-                    >Company Name</label
+                    >{{ 'ADMIN.COMPANY_NAME' | translate }}</label
                   >
                   <input
                     formControlName="name"
@@ -281,7 +292,7 @@ import { BASE_PATH } from '../api/variables';
               <div>
                 <label
                   class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1"
-                  >Custom Domain (Optional)</label
+                  >{{ 'ADMIN.CUSTOM_DOMAIN' | translate }}</label
                 >
                 <input
                   formControlName="domain"
@@ -301,7 +312,7 @@ import { BASE_PATH } from '../api/variables';
                   </div>
                   <span
                     class="text-xs font-black uppercase tracking-widest text-gray-500 group-hover:text-indigo-600 transition-colors"
-                    >Is Active</span
+                    >{{ 'ADMIN.IS_ACTIVE' | translate }}</span
                   >
                 </label>
               </div>
@@ -312,7 +323,7 @@ import { BASE_PATH } from '../api/variables';
                   (click)="closeModal()"
                   class="flex-1 px-8 py-5 rounded-2xl font-black text-xs uppercase tracking-widest text-gray-400 hover:bg-gray-50 transition-all"
                 >
-                  Cancel
+                  {{ 'COMMON.CANCEL' | translate }}
                 </button>
                 <button
                   type="submit"
@@ -336,7 +347,7 @@ import { BASE_PATH } from '../api/variables';
                       ></path>
                     </svg>
                   }
-                  {{ isEditMode() ? 'Save Changes' : 'Confirm & Register' }}
+                  {{ (isEditMode() ? 'QUIZ.SAVE_CHANGES' : 'ADMIN.CONFIRM_REGISTER') | translate }}
                 </button>
               </div>
             </form>
@@ -361,6 +372,7 @@ export class TenantManagementComponent implements OnInit {
   private adminService = inject(AdminService);
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
+  private translate = inject(TranslateService);
 
   constructor() {
     this.tenantForm = this.fb.group({

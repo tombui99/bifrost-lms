@@ -10,7 +10,7 @@ namespace BifrostLms.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,TenantAdmin")]
 public class AdminController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -35,7 +35,18 @@ public class AdminController : ControllerBase
     [HttpGet("users")]
     public async Task<ActionResult<IEnumerable<UserDisplayDto>>> GetUsers()
     {
-        var users = await _userManager.Users.IgnoreQueryFilters().ToListAsync();
+        var currentUserId = _userManager.GetUserId(User);
+        var currentUser = await _userManager.FindByIdAsync(currentUserId!);
+        var isGlobalAdmin = await _userManager.IsInRoleAsync(currentUser!, "Admin");
+        var tenantId = currentUser?.TenantId;
+
+        var usersQuery = _userManager.Users.IgnoreQueryFilters();
+        if (!isGlobalAdmin)
+        {
+            usersQuery = usersQuery.Where(u => u.TenantId == tenantId);
+        }
+
+        var users = await usersQuery.ToListAsync();
         var userDisplays = new List<UserDisplayDto>();
 
         foreach (var user in users)
@@ -57,6 +68,20 @@ public class AdminController : ControllerBase
     [HttpPost("users")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto model)
     {
+        var currentUserId = _userManager.GetUserId(User);
+        var currentUser = await _userManager.FindByIdAsync(currentUserId!);
+        var isGlobalAdmin = await _userManager.IsInRoleAsync(currentUser!, "Admin");
+
+        if (!isGlobalAdmin)
+        {
+            // Tenant Admin restrictions
+            if (model.TenantId != currentUser?.TenantId)
+                return Forbid();
+            
+            if (model.Role == "Admin" || model.Role == "TenantAdmin")
+                return BadRequest(new { Message = "Tenant Admins can only create Students and Teachers." });
+        }
+
         var userExists = await _userManager.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.UserName == model.Username);
         if (userExists != null)
             return BadRequest(new { Message = "User already exists!" });
@@ -86,8 +111,21 @@ public class AdminController : ControllerBase
     [HttpPut("users/{id}")]
     public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserDto model)
     {
+        var currentUserId = _userManager.GetUserId(User);
+        var currentUser = await _userManager.FindByIdAsync(currentUserId!);
+        var isGlobalAdmin = await _userManager.IsInRoleAsync(currentUser!, "Admin");
+
         var user = await _userManager.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == id);
         if (user == null) return NotFound();
+
+        if (!isGlobalAdmin)
+        {
+            if (user.TenantId != currentUser?.TenantId || model.TenantId != currentUser?.TenantId)
+                return Forbid();
+
+            if (model.Role == "Admin" || model.Role == "TenantAdmin")
+                return BadRequest(new { Message = "Tenant Admins can only assign Student and Teacher roles." });
+        }
 
         user.FullName = model.FullName;
         user.TenantId = model.TenantId;
@@ -101,6 +139,9 @@ public class AdminController : ControllerBase
 
         if (currentRole != model.Role)
         {
+            if (id == currentUserId)
+                return BadRequest(new { Message = "You cannot change your own role." });
+
             if (currentRole != null)
                 await _userManager.RemoveFromRoleAsync(user, currentRole);
 
@@ -116,8 +157,15 @@ public class AdminController : ControllerBase
     [HttpDelete("users/{id}")]
     public async Task<IActionResult> DeleteUser(string id)
     {
-        var user = await _userManager.FindByIdAsync(id);
+        var currentUserId = _userManager.GetUserId(User);
+        var currentUser = await _userManager.FindByIdAsync(currentUserId!);
+        var isGlobalAdmin = await _userManager.IsInRoleAsync(currentUser!, "Admin");
+
+        var user = await _userManager.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == id);
         if (user == null) return NotFound();
+
+        if (!isGlobalAdmin && user.TenantId != currentUser?.TenantId)
+            return Forbid();
 
         var result = await _userManager.DeleteAsync(user);
         if (!result.Succeeded)
@@ -129,12 +177,24 @@ public class AdminController : ControllerBase
     // --- Tenant Management ---
 
     [HttpGet("tenants")]
+    [Authorize(Roles = "Admin,TenantAdmin")]
     public async Task<ActionResult<IEnumerable<Tenant>>> GetTenants()
     {
-        return await _context.Tenants.ToListAsync();
+        var currentUserId = _userManager.GetUserId(User);
+        var currentUser = await _userManager.FindByIdAsync(currentUserId!);
+        var isGlobalAdmin = await _userManager.IsInRoleAsync(currentUser!, "Admin");
+
+        if (isGlobalAdmin)
+        {
+            return await _context.Tenants.ToListAsync();
+        }
+
+        var tenantId = currentUser?.TenantId;
+        return await _context.Tenants.Where(t => t.Id == tenantId).ToListAsync();
     }
 
     [HttpPost("tenants")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<Tenant>> CreateTenant([FromBody] Tenant tenant)
     {
         if (await _context.Tenants.AnyAsync(t => t.Id == tenant.Id))
@@ -146,6 +206,7 @@ public class AdminController : ControllerBase
     }
 
     [HttpPut("tenants/{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateTenant(string id, [FromBody] Tenant tenant)
     {
         if (id != tenant.Id) return BadRequest();
@@ -156,6 +217,7 @@ public class AdminController : ControllerBase
     }
 
     [HttpDelete("tenants/{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteTenant(string id)
     {
         var tenant = await _context.Tenants.FindAsync(id);
@@ -168,6 +230,7 @@ public class AdminController : ControllerBase
 
     [HttpPost("tenants/{id}/logo")]
     [Consumes("multipart/form-data")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UploadLogo(string id, [FromForm] IFormFile file)
     {
         var tenant = await _context.Tenants.FindAsync(id);
@@ -206,6 +269,7 @@ public class AdminController : ControllerBase
     }
 
     [HttpDelete("tenants/{id}/logo")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteLogo(string id)
     {
         var tenant = await _context.Tenants.FindAsync(id);
@@ -232,6 +296,7 @@ public class AdminController : ControllerBase
     // --- Content Management (Global Access) ---
 
     [HttpGet("content")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<ContentDisplayDto>>> GetContent()
     {
         var courses = await _context.Courses.IgnoreQueryFilters()
@@ -250,6 +315,7 @@ public class AdminController : ControllerBase
     }
 
     [HttpPost("content/reassign")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateContentTenant([FromBody] ContentTenantUpdateDto model)
     {
         if (model.EntityType != "Course") return BadRequest("Only Courses can be reassigned.");
@@ -271,6 +337,7 @@ public class AdminController : ControllerBase
     }
 
     [HttpPost("course/share")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateCourseSharing([FromBody] CourseShareDto model)
     {
         var course = await _context.Courses.IgnoreQueryFilters()
