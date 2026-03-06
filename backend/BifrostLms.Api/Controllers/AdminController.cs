@@ -10,7 +10,7 @@ namespace BifrostLms.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin,TenantAdmin")]
+[Authorize(Roles = "Admin,TenantAdmin,Teacher")]
 public class AdminController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -66,6 +66,7 @@ public class AdminController : ControllerBase
     }
 
     [HttpPost("users")]
+    [Authorize(Roles = "Admin,TenantAdmin")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto model)
     {
         var currentUserId = _userManager.GetUserId(User);
@@ -109,6 +110,7 @@ public class AdminController : ControllerBase
     }
 
     [HttpPut("users/{id}")]
+    [Authorize(Roles = "Admin,TenantAdmin")]
     public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserDto model)
     {
         var currentUserId = _userManager.GetUserId(User);
@@ -155,6 +157,7 @@ public class AdminController : ControllerBase
     }
 
     [HttpDelete("users/{id}")]
+    [Authorize(Roles = "Admin,TenantAdmin")]
     public async Task<IActionResult> DeleteUser(string id)
     {
         var currentUserId = _userManager.GetUserId(User);
@@ -296,7 +299,7 @@ public class AdminController : ControllerBase
     // --- Content Management (Global Access) ---
 
     [HttpGet("content")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,TenantAdmin")]
     public async Task<ActionResult<IEnumerable<ContentDisplayDto>>> GetContent()
     {
         var courses = await _context.Courses.IgnoreQueryFilters()

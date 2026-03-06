@@ -7,13 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { BatchUpdateChoiceDtoId } from './batchUpdateChoiceDtoId';
+import { ApplicationUserDepartmentId } from './applicationUserDepartmentId';
 
 
 export interface CreateQuizDto { 
     title?: string;
     description?: string | null;
-    timeLimitMinutes?: BatchUpdateChoiceDtoId | null;
-    numberOfQuestionsToServe?: BatchUpdateChoiceDtoId | null;
+    timeLimitMinutes?: ApplicationUserDepartmentId | null;
+    numberOfQuestionsToServe?: ApplicationUserDepartmentId | null;
 }
 

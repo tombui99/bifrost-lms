@@ -7,12 +7,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { BatchUpdateChoiceDtoId } from './batchUpdateChoiceDtoId';
+import { ApplicationUserDepartmentId } from './applicationUserDepartmentId';
 import { BatchUpdateChoiceDto } from './batchUpdateChoiceDto';
 
 
 export interface BatchUpdateQuestionDto { 
-    id?: BatchUpdateChoiceDtoId | null;
+    id?: ApplicationUserDepartmentId | null;
     text?: string;
     choices?: Array<BatchUpdateChoiceDto>;
 }

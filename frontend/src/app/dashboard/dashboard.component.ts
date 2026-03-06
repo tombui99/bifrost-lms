@@ -5,6 +5,9 @@ import { Router } from '@angular/router';
 import { StudentProgressService } from '../api/api/studentProgress.service';
 import { LanguageService } from '../core/language/language.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { RoutesService } from '../api/api/routes.service';
+import { DepartmentsService } from '../api/api/departments.service';
+import { RouteDto, DepartmentDto } from '../api/model/models';
 
 @Component({
   selector: 'app-dashboard',
@@ -60,7 +63,7 @@ import { TranslateModule } from '@ngx-translate/core';
               </div>
             </div>
 
-            <!-- Schedule Management Widget (New) -->
+            <!-- Schedule Management Widget -->
             <div
               (click)="navigateToSchedule()"
               class="bg-white overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border-t-4 border-yellow-400 group active:scale-95"
@@ -87,6 +90,78 @@ import { TranslateModule } from '@ngx-translate/core';
                   <div class="ml-5">
                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
                       {{ 'DASHBOARD.SCHEDULE' | translate }}
+                    </p>
+                    <p class="text-lg font-black text-gray-900 leading-tight">
+                      {{ 'COMMON.MANAGEMENT' | translate }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Route Management Widget -->
+            <div
+              (click)="navigateToRouteManagement()"
+              class="bg-white overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border-t-4 border-indigo-400 group active:scale-95"
+            >
+              <div class="p-6">
+                <div class="flex items-center">
+                  <div
+                    class="shrink-0 bg-indigo-50 rounded-2xl p-4 group-hover:bg-indigo-100 transition-colors"
+                  >
+                    <svg
+                      class="w-6 h-6 text-indigo-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                      />
+                    </svg>
+                  </div>
+                  <div class="ml-5">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                      {{ 'ROUTE.TITLE' | translate }}
+                    </p>
+                    <p class="text-lg font-black text-gray-900 leading-tight">
+                      {{ 'COMMON.MANAGEMENT' | translate }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Department Management Widget -->
+            <div
+              (click)="navigateToDepartmentManagement()"
+              class="bg-white overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border-t-4 border-indigo-400 group active:scale-95"
+            >
+              <div class="p-6">
+                <div class="flex items-center">
+                  <div
+                    class="shrink-0 bg-indigo-50 rounded-2xl p-4 group-hover:bg-indigo-100 transition-colors"
+                  >
+                    <svg
+                      class="w-6 h-6 text-indigo-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                  </div>
+                  <div class="ml-5">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                      {{ 'DEPARTMENT.TITLE' | translate }}
                     </p>
                     <p class="text-lg font-black text-gray-900 leading-tight">
                       {{ 'COMMON.MANAGEMENT' | translate }}
@@ -139,7 +214,7 @@ import { TranslateModule } from '@ngx-translate/core';
       @if (authService.userRole() === 'Admin' || authService.userRole() === 'TenantAdmin') {
         <div
           (click)="navigateToAdmin()"
-          class="max-w-sm bg-indigo-900 overflow-hidden shadow-2xl shadow-indigo-200 rounded-3xl hover:shadow-indigo-300 transition-all duration-300 cursor-pointer border-t-4 border-indigo-400 group active:scale-95 translate-y-0 hover:-translate-y-2"
+          class="max-w-sm bg-indigo-900 overflow-hidden shadow-2xl shadow-indigo-200 rounded-3xl hover:shadow-indigo-300 transition-all duration-300 cursor-pointer border-t-4 border-indigo-400 group active:scale-95 translate-y-0 hover:-translate-y-2 mb-8"
         >
           <div class="p-6 relative">
             <div
@@ -180,98 +255,116 @@ import { TranslateModule } from '@ngx-translate/core';
         </div>
       }
 
-      <!-- Student Progress Summary (New) -->
-      @if (authService.userRole() === 'Student' && overallProgress() !== null) {
-        <div class="mb-10 animate-fade-in">
-          <div
-            class="bg-white rounded-3xl p-8 shadow-xl border border-indigo-50/50 relative overflow-hidden"
-          >
-            <div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
-              <!-- Circular Progress -->
-              <div class="relative w-32 h-32 shrink-0">
-                <svg class="w-full h-full transform -rotate-90">
-                  <circle
-                    cx="64"
-                    cy="64"
-                    r="58"
-                    stroke="currentColor"
-                    stroke-width="8"
-                    fill="transparent"
-                    class="text-gray-100"
-                  />
-                  <circle
-                    cx="64"
-                    cy="64"
-                    r="58"
-                    stroke="currentColor"
-                    stroke-width="8"
-                    fill="transparent"
-                    [attr.stroke-dasharray]="364.4"
-                    [attr.stroke-dashoffset]="364.4 - (364.4 * overallProgress()!) / 100"
-                    class="text-indigo-600 transition-all duration-1000 ease-out"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center">
-                  <span class="text-3xl font-black text-indigo-600">{{ overallProgress() }}%</span>
-                </div>
-              </div>
-
-              <div class="grow text-center md:text-left">
-                <h3 class="text-3xl font-black text-gray-900 mb-2 leading-tight">
-                  {{ 'DASHBOARD.LEARNING_JOURNEY' | translate }}
-                </h3>
-                <p class="text-gray-500 mb-6 max-w-md text-lg leading-relaxed">
-                  {{ 'DASHBOARD.COMPLETED_TEXT' | translate }}
-                  <span class="bg-indigo-600 text-white px-2 rounded-lg font-bold"
-                    >{{ overallProgress() }}%</span
-                  >
-                  {{ 'DASHBOARD.MATERIALS_TEXT' | translate }}
-                </p>
-                <div class="flex flex-wrap justify-center md:justify-start gap-4">
-                  <div
-                    class="bg-indigo-50 px-5 py-3 rounded-2xl border border-indigo-100 shadow-sm transition-all hover:bg-white"
-                  >
-                    <span
-                      class="block text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-1 leading-none"
-                      >{{ 'DASHBOARD.STATUS' | translate }}</span
-                    >
-                    <span class="text-indigo-700 font-black text-sm uppercase tracking-wider">
-                      @if (overallProgress()! >= 100) {
-                        {{ 'DASHBOARD.MASTERED' | translate }}
-                      } @else if (overallProgress()! >= 50) {
-                        {{ 'DASHBOARD.ON_TRACK' | translate }}
-                      } @else {
-                        {{ 'DASHBOARD.JUST_STARTING' | translate }}
-                      }
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="hidden lg:block">
-                <button
-                  (click)="navigateToStudentCourses()"
-                  class="bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 px-10 rounded-3xl shadow-2xl shadow-indigo-100 transition-all hover:scale-105 active:scale-95 text-lg"
-                >
-                  {{ 'DASHBOARD.CONTINUE_LEARNING' | translate }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Decorative Background Element -->
-            <div
-              class="absolute top-0 right-0 -mt-20 -mr-20 w-64 h-64 bg-indigo-50 rounded-full blur-3xl opacity-50"
-            ></div>
-          </div>
-        </div>
-      }
-
       <!-- Student Section -->
       @if (authService.userRole() === 'Student') {
-        <h2 class="text-2xl font-black text-gray-900 mb-6 tracking-tight">
-          {{ 'DASHBOARD.OVERALL_PROGRESS' | translate }}
-        </h2>
+        <!-- My Department Info -->
+        <div
+          class="flex items-center justify-between mb-8 bg-indigo-900/5 p-8 rounded-[40px] border border-indigo-100"
+        >
+          <div>
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 mb-1">
+              Your Department
+            </h3>
+            <p class="text-2xl font-black text-gray-900 italic">
+              {{ myDepartment()?.name || 'No Department Assigned' }}
+            </p>
+          </div>
+          <div
+            class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-indigo-600"
+          >
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <!-- My Routes -->
+        <div class="mb-10 animate-fade-in">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            @for (route of routes(); track $any(route.id)) {
+              <div
+                (click)="navigateToRoutes()"
+                class="bg-white rounded-3xl p-8 shadow-xl border border-indigo-50/50 relative overflow-hidden group hover:shadow-2xl transition-all duration-300 cursor-pointer active:scale-95"
+              >
+                <div class="relative z-10">
+                  <div class="flex items-center gap-6 mb-6">
+                    <div
+                      class="shrink-0 bg-indigo-600 rounded-2xl p-4 shadow-lg ring-1 ring-white/20"
+                    >
+                      <svg
+                        class="h-8 w-8 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="text-2xl font-black text-gray-900 leading-tight">
+                        {{ route.name }}
+                      </h3>
+                      <p class="text-gray-500 line-clamp-1 italic">{{ route.description }}</p>
+                    </div>
+                  </div>
+
+                  <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">
+                        {{ 'DASHBOARD.PROGRESS' | translate }}
+                      </span>
+                      <span class="text-lg font-black text-indigo-600"
+                        >{{ getRouteProgress(route) }}%</span
+                      >
+                    </div>
+                    <div
+                      class="w-full bg-gray-100 rounded-full h-4 overflow-hidden shadow-inner p-1"
+                    >
+                      <div
+                        class="bg-indigo-600 h-full rounded-full transition-all duration-1000 ease-out shadow-lg"
+                        [style.width.%]="getRouteProgress(route)"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div class="mt-8 flex flex-wrap gap-3">
+                    @for (rc of route.courses?.slice(0, 3); track rc.courseId) {
+                      <div
+                        class="bg-indigo-50 px-4 py-2 rounded-xl text-indigo-700 text-xs font-bold border border-indigo-100"
+                      >
+                        {{ rc.courseTitle }}
+                      </div>
+                    }
+                    @if ((route.courses?.length || 0) > 3) {
+                      <div
+                        class="bg-gray-50 px-4 py-2 rounded-xl text-gray-400 text-xs font-bold border border-gray-100"
+                      >
+                        +{{ (route.courses?.length || 0) - 3 }} {{ 'COMMON.MORE' | translate }}
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Decorative Background Element -->
+                <div
+                  class="absolute top-0 right-0 -mt-20 -mr-20 w-64 h-64 bg-indigo-50 rounded-full blur-3xl opacity-50 group-hover:scale-110 transition-transform"
+                ></div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Overall Progress Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Widget: Schedule -->
           <div
@@ -340,6 +433,72 @@ import { TranslateModule } from '@ngx-translate/core';
               </div>
             </div>
           </div>
+
+          <!-- Widget: Forum -->
+          <div
+            class="bg-white group overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 active:scale-95"
+          >
+            <div class="p-6">
+              <div
+                class="flex items-center justify-center mb-4 bg-indigo-50 w-16 h-16 rounded-2xl mx-auto group-hover:bg-indigo-100 transition-colors"
+              >
+                <svg
+                  class="h-8 w-8 text-indigo-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
+                  />
+                </svg>
+              </div>
+              <div class="text-center">
+                <h3 class="text-lg font-bold text-gray-900">
+                  {{ 'DASHBOARD.FORUM' | translate }}
+                </h3>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+                  {{ 'DASHBOARD.DISCUSSION' | translate }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Widget: Resources -->
+          <div
+            class="bg-white group overflow-hidden shadow-lg shadow-gray-100 rounded-3xl hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 active:scale-95"
+          >
+            <div class="p-6">
+              <div
+                class="flex items-center justify-center mb-4 bg-indigo-50 w-16 h-16 rounded-2xl mx-auto group-hover:bg-indigo-100 transition-colors"
+              >
+                <svg
+                  class="h-8 w-8 text-indigo-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                  />
+                </svg>
+              </div>
+              <div class="text-center">
+                <h3 class="text-lg font-bold text-gray-900">
+                  {{ 'DASHBOARD.LIBRARY' | translate }}
+                </h3>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+                  {{ 'DASHBOARD.RESOURCES' | translate }}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       }
     </div>
@@ -348,19 +507,36 @@ import { TranslateModule } from '@ngx-translate/core';
 export class DashboardComponent implements OnInit {
   authService = inject(AuthenticationService);
   studentProgressService = inject(StudentProgressService);
+  routesService = inject(RoutesService);
+  departmentsService = inject(DepartmentsService);
   public languageService = inject(LanguageService);
+  private router = inject(Router);
 
   overallProgress = signal<number | null>(null);
+  routes = signal<RouteDto[]>([]);
+  myDepartment = signal<DepartmentDto | null>(null);
+  courseProgressMap = new Map<number, number>();
 
   ngOnInit() {
     if (this.authService.userRole() === 'Student') {
       this.loadOverallProgress();
+      this.loadMyRoutes();
+      this.loadMyDepartment();
     }
   }
 
   loadOverallProgress() {
     this.studentProgressService.apiStudentProgressCoursesGet().subscribe({
       next: (courses) => {
+        courses.forEach((c) => {
+          if (c.courseId !== undefined) {
+            this.courseProgressMap.set(
+              c.courseId as any as number,
+              (c.progressPercentage as any) || 0,
+            );
+          }
+        });
+
         if (courses.length > 0) {
           const total = courses.reduce((acc, course) => {
             const progress = course.progressPercentage as any as number;
@@ -377,6 +553,36 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  loadMyRoutes() {
+    this.routesService.apiRoutesMyGet().subscribe({
+      next: (data) => {
+        this.routes.set(data);
+      },
+      error: (err) => {
+        console.error('Error loading routes:', err);
+      },
+    });
+  }
+
+  loadMyDepartment() {
+    this.departmentsService.apiDepartmentsMyGet().subscribe({
+      next: (data) => {
+        this.myDepartment.set(data);
+      },
+      error: (err) => {
+        console.error('Error loading department:', err);
+      },
+    });
+  }
+
+  getRouteProgress(route: RouteDto): number {
+    if (!route.courses || route.courses.length === 0) return 0;
+    const totalProgress = route.courses.reduce((acc, rc) => {
+      return acc + (this.courseProgressMap.get(rc.courseId as any as number) || 0);
+    }, 0);
+    return Math.round(totalProgress / route.courses.length);
+  }
+
   navigateToCourseManagement() {
     this.router.navigate(['/courses/manage']);
   }
@@ -387,6 +593,18 @@ export class DashboardComponent implements OnInit {
 
   navigateToStudentCourses() {
     this.router.navigate(['/student/courses']);
+  }
+
+  navigateToRouteManagement() {
+    this.router.navigate(['/routes/manage']);
+  }
+
+  navigateToRoutes() {
+    this.router.navigate(['/student/routes']);
+  }
+
+  navigateToDepartmentManagement() {
+    this.router.navigate(['/departments/manage']);
   }
 
   navigateToSchedule() {
@@ -400,6 +618,4 @@ export class DashboardComponent implements OnInit {
   navigateToAdmin() {
     this.router.navigate(['/admin']);
   }
-
-  private router = inject(Router);
 }

@@ -44,7 +44,8 @@
     "QUIZ": "Trắc nghiệm",
     "STATUS": "Trạng thái",
     "APPROVED": "Đã phê duyệt",
-    "DRAFT": "Bản nháp"
+    "DRAFT": "Bản nháp",
+    "BACK": "Quay lại"
   },
   "DASHBOARD": {
     "WELCOME": "Chào mừng bạn quay lại",
@@ -67,7 +68,8 @@
     "DISCUSSION": "Thảo luận",
     "LIBRARY": "Thư viện",
     "RESOURCES": "Tài liệu",
-    "NO_COURSES": "Bạn chưa đăng ký khóa học nào."
+    "NO_COURSES": "Bạn chưa đăng ký khóa học nào.",
+    "PROGRESS": "Tiến độ"
   },
   "AUTH": {
     "LOGIN": "Đăng nhập",
@@ -109,6 +111,7 @@
     "START_LEARNING": "Bắt đầu học",
     "REVIEW_COURSE": "Xem lại khóa học",
     "CONTINUE_LEARNING": "Tiếp tục học",
+    "TITLE_PLURAL": "Các khóa học",
     "COURSE_CONTENT": "NỘI DUNG KHÓA HỌC",
     "OVERALL_COMPLETION": "Hoàn thành tổng thể",
     "COURSE_COMPLETED_MSG": "Đã hoàn thành khóa học!",
@@ -124,7 +127,8 @@
     "OPEN_IN_NEW_TAB": "Mở trong tab mới",
     "LESSON_PREPARING": "Bài học này hiện đang được giáo viên chuẩn bị.",
     "CONTENT_LOCKED": "Nội dung đã khóa",
-    "UNLOCK_MSG": "Vui lòng nhấp vào nút Bắt đầu học ở trên để mở khóa kế hoạch bài học và trắc nghiệm."
+    "UNLOCK_MSG": "Vui lòng nhấp vào nút Bắt đầu học ở trên để mở khóa kế hoạch bài học và trắc nghiệm.",
+    "START_COURSE": "Bắt đầu khóa học"
   },
   "QUIZ": {
     "CONGRATULATIONS": "Xin chúc mừng!",
@@ -277,5 +281,52 @@
     "CUSTOM_DOMAIN": "Tên miền riêng (Tùy chọn)",
     "IS_ACTIVE": "Đang hoạt động",
     "CONFIRM_REGISTER": "Xác nhận & Đăng ký"
+  },
+  "ROUTE": {
+    "TITLE": "Lộ trình học tập",
+    "DESC": "Quản lý lộ trình học tập và gán khóa học",
+    "CREATE": "Tạo lộ trình mới",
+    "EDIT": "Sửa lộ trình",
+    "NAME": "Tên lộ trình",
+    "COURSES": "Khóa học trong lộ trình",
+    "ADD_COURSE": "Thêm khóa học vào lộ trình",
+    "NO_ROUTES": "Chưa tìm thấy lộ trình nào",
+    "NO_ROUTES_DESC": "Vui lòng đợi giáo viên giao lộ trình học tập cho bạn.",
+    "MY_ROUTES": "Lộ trình học của tôi",
+    "START_ROUTE": "Bắt đầu lộ trình",
+    "ASSIGNED_TO": "Gán cho",
+    "UNASSIGN": "Hủy gán",
+    "START_COURSE": "Bắt đầu khóa học"
+  },
+  "DEPARTMENT": {
+    "TITLE": "Phòng ban",
+    "DESC": "Quản lý cơ cấu tổ chức và gán lộ trình",
+    "CREATE": "Tạo phòng ban mới",
+    "EDIT": "Sửa phòng ban",
+    "NAME": "Tên phòng ban",
+    "PARENT": "Phòng ban cấp trên",
+    "SUB_DEPARTMENTS": "Phòng ban cấp dưới",
+    "ASSIGN_ROUTE": "Gán lộ trình",
+    "ASSIGN_STUDENT": "Gán học sinh",
+    "NO_DEPARTMENTS": "Chưa có phòng ban nào. Hãy bắt đầu xây dựng cơ cấu!",
+    "ASSIGNED_ROUTES": "Lộ trình đã gán",
+    "ASSIGNED_STUDENTS": "Học sinh đã gán",
+    "NO_ROUTES_ASSIGNED": "Chưa có lộ trình nào được gán",
+    "NO_STUDENTS_ASSIGNED": "Chưa có học sinh nào được gán",
+    "SELECT_DEPARTMENT": "Chọn một phòng ban để quản lý",
+    "ASSIGN_BTN": "+ Gán",
+    "STRUCTURE": "Cơ cấu",
+    "ADD_ROOT": "Thêm phòng ban gốc",
+    "NO_DESCRIPTION": "Chưa có mô tả",
+    "ADD_SUB": "Thêm phòng ban con",
+    "CONFIRM_DELETE": "Bạn có chắc chắn muốn xóa phòng ban này không?",
+    "DELETE_FAILED": "Xóa phòng ban thất bại.",
+    "CONFIRM_UNASSIGN_ROUTE": "Hủy gán lộ trình này?",
+    "CONFIRM_UNASSIGN_STUDENT": "Xóa học sinh khỏi phòng ban này?",
+    "MODAL_TITLE_CREATE": "Tạo phòng ban",
+    "MODAL_TITLE_EDIT": "Sửa phòng ban",
+    "MODAL_TITLE_ADD_SUB": "Thêm phòng ban con vào",
+    "MODAL_TITLE_ASSIGN_ROUTE": "Gán lộ trình cho",
+    "MODAL_TITLE_ASSIGN_STUDENT": "Gán học sinh cho"
   }
 }

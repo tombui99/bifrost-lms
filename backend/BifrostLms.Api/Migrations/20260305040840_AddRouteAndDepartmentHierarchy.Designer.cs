@@ -3,6 +3,7 @@ using System;
 using BifrostLms.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BifrostLms.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260305040840_AddRouteAndDepartmentHierarchy")]
+    partial class AddRouteAndDepartmentHierarchy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,9 +200,6 @@ namespace BifrostLms.Api.Migrations
 
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
-
-                    b.Property<string>("TenantId")
-                        .HasColumnType("longtext");
 
                     b.HasKey("DepartmentId", "RouteId");
 
@@ -460,9 +460,6 @@ namespace BifrostLms.Api.Migrations
 
                     b.Property<int>("Order")
                         .HasColumnType("int");
-
-                    b.Property<string>("TenantId")
-                        .HasColumnType("longtext");
 
                     b.HasKey("RouteId", "CourseId");
 

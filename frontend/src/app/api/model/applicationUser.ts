@@ -7,12 +7,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ApplicationUserDepartmentId } from './applicationUserDepartmentId';
 import { ApiCoursesIdGetIdParameter } from './apiCoursesIdGetIdParameter';
 
 
 export interface ApplicationUser { 
     fullName?: string | null;
     tenantId?: string | null;
+    departmentId?: ApplicationUserDepartmentId | null;
     id?: string | null;
     userName?: string | null;
     normalizedUserName?: string | null;

@@ -76,6 +76,7 @@ public class AuthController : ControllerBase
             foreach (var userRole in userRoles)
             {
                 authClaims.Add(new System.Security.Claims.Claim(ClaimTypes.Role, userRole));
+                authClaims.Add(new System.Security.Claims.Claim("role", userRole)); // Legacy/Standard compatibility
             }
 
             var token = GetToken(authClaims);

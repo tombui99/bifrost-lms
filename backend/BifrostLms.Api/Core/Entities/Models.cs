@@ -12,6 +12,9 @@ public class ApplicationUser : IdentityUser, IMultiTenant
 {
     public string? FullName { get; set; }
     public string? TenantId { get; set; } // For multi-tenancy if needed per user
+    public int? DepartmentId { get; set; }
+    [JsonIgnore]
+    public Department? Department { get; set; }
 }
 
 public abstract class BaseEntity : IMultiTenant
@@ -135,4 +138,45 @@ public class QuizAttempt : BaseEntity
     public double Score { get; set; }
     public bool IsPassed { get; set; }
     public DateTime CompletedAt { get; set; } = DateTime.UtcNow;
+}
+
+public class Department : BaseEntity
+{
+    public string Name { get; set; } = default!;
+    public string? Description { get; set; }
+    public int? ParentDepartmentId { get; set; }
+    [JsonIgnore]
+    public Department? ParentDepartment { get; set; }
+    public List<Department> SubDepartments { get; set; } = new();
+    public List<ApplicationUser> Students { get; set; } = new();
+    public List<DepartmentRoute> DepartmentRoutes { get; set; } = new();
+}
+
+public class Route : BaseEntity
+{
+    public string Name { get; set; } = default!;
+    public string? Description { get; set; }
+    public List<RouteCourse> RouteCourses { get; set; } = new();
+    public List<DepartmentRoute> DepartmentRoutes { get; set; } = new();
+}
+
+public class RouteCourse : IMultiTenant
+{
+    public int RouteId { get; set; }
+    [JsonIgnore]
+    public Route Route { get; set; } = default!;
+    public int CourseId { get; set; }
+    public Course Course { get; set; } = default!;
+    public int Order { get; set; }
+    public string? TenantId { get; set; }
+}
+
+public class DepartmentRoute : IMultiTenant
+{
+    public int DepartmentId { get; set; }
+    [JsonIgnore]
+    public Department Department { get; set; } = default!;
+    public int RouteId { get; set; }
+    public Route Route { get; set; } = default!;
+    public string? TenantId { get; set; }
 }

@@ -18,6 +18,12 @@ public class CoursesController : ControllerBase
         _context = context;
     }
 
+    private string? GetUserId()
+    {
+        return User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
+            ?? User.FindFirst("sub")?.Value;
+    }
+
     // GET: api/Courses - Public endpoint for all users
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
@@ -27,6 +33,20 @@ public class CoursesController : ControllerBase
         if (User.IsInRole("Student"))
         {
             query = query.Where(c => c.IsApproved);
+            
+            var userId = GetUserId();
+            var user = await _context.Users.FindAsync(userId);
+            
+            if (user?.DepartmentId != null)
+            {
+                // If student is in a department, only show courses from routes assigned to that department
+                var allowedCourseIds = await _context.DepartmentRoutes
+                    .Where(dr => dr.DepartmentId == user.DepartmentId)
+                    .SelectMany(dr => dr.Route.RouteCourses.Select(rc => rc.CourseId))
+                    .ToListAsync();
+                
+                query = query.Where(c => allowedCourseIds.Contains(c.Id));
+            }
         }
 
         return await query.ToListAsync();

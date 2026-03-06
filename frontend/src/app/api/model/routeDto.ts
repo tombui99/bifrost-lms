@@ -7,17 +7,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ApplicationUserDepartmentId } from './applicationUserDepartmentId';
 import { ApiCoursesIdGetIdParameter } from './apiCoursesIdGetIdParameter';
-import { QuestionDto } from './questionDto';
+import { RouteCourseDto } from './routeCourseDto';
 
 
-export interface QuizDto { 
+export interface RouteDto { 
     id?: ApiCoursesIdGetIdParameter;
-    title?: string;
+    name?: string;
     description?: string | null;
-    timeLimitMinutes?: ApplicationUserDepartmentId | null;
-    numberOfQuestionsToServe?: ApplicationUserDepartmentId | null;
-    questions?: Array<QuestionDto>;
+    courses?: Array<RouteCourseDto>;
 }
 

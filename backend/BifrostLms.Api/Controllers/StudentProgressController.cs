@@ -10,6 +10,8 @@ using System.IdentityModel.Tokens.Jwt;
 
 using BifrostLms.Api.Core.Services;
 
+using Microsoft.AspNetCore.Identity;
+
 namespace BifrostLms.Api.Controllers;
 
 [ApiController]
@@ -20,12 +22,14 @@ public class StudentProgressController : ControllerBase
     private readonly AppDbContext _context;
     private readonly ILogger<StudentProgressController> _logger;
     private readonly IProgressService _progressService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public StudentProgressController(AppDbContext context, ILogger<StudentProgressController> logger, IProgressService progressService)
+    public StudentProgressController(AppDbContext context, ILogger<StudentProgressController> logger, IProgressService progressService, UserManager<ApplicationUser> userManager)
     {
         _context = context;
         _logger = logger;
         _progressService = progressService;
+        _userManager = userManager;
     }
 
     private string? GetUserId()
@@ -50,7 +54,23 @@ public class StudentProgressController : ControllerBase
         var userId = GetUserId();
         if (userId == null) return Unauthorized();
 
-        var courses = await _context.Courses
+        var query = _context.Courses.AsQueryable();
+        var user = await _userManager.FindByIdAsync(userId);
+        
+        if (user != null && user.DepartmentId != null)
+        {
+            var routeCourseIds = await _context.DepartmentRoutes
+                .Where(dr => dr.DepartmentId == user.DepartmentId)
+                .Select(dr => dr.Route)
+                .SelectMany(r => r.RouteCourses)
+                .Select(rc => rc.CourseId)
+                .Distinct()
+                .ToListAsync();
+
+            query = query.Where(c => routeCourseIds.Contains(c.Id));
+        }
+
+        var courses = await query
             .Where(c => c.IsApproved)
             .Include(c => c.Lessons.OrderBy(l => l.CreatedAt))
             .ToListAsync();
@@ -107,6 +127,18 @@ public class StudentProgressController : ControllerBase
     {
         var userId = GetUserId();
         if (userId == null) return Unauthorized();
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user != null && user.DepartmentId != null)
+        {
+             var hasAccess = await _context.DepartmentRoutes
+                .Where(dr => dr.DepartmentId == user.DepartmentId)
+                .Select(dr => dr.Route)
+                .SelectMany(r => r.RouteCourses)
+                .AnyAsync(rc => rc.CourseId == courseId);
+            
+            if (!hasAccess) return Forbid();
+        }
 
         var course = await _context.Courses
             .Include(c => c.Lessons.OrderBy(l => l.CreatedAt))

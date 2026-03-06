@@ -7,12 +7,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ApplicationUserDepartmentId } from './applicationUserDepartmentId';
+import { ApiCoursesIdGetIdParameter } from './apiCoursesIdGetIdParameter';
 
 
-export interface BatchUpdateChoiceDto { 
-    id?: ApplicationUserDepartmentId | null;
-    text?: string;
-    isCorrect?: boolean;
+export interface AssignRouteToDepartmentDto { 
+    routeId?: ApiCoursesIdGetIdParameter;
 }
 

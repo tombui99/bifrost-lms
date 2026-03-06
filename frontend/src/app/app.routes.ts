@@ -23,6 +23,20 @@ export const routes: Routes = [
         canActivate: [teacherGuard],
       },
       {
+        path: 'routes/manage',
+        loadComponent: () =>
+          import('./admin/route-management.component').then((m) => m.RouteManagementComponent),
+        canActivate: [teacherGuard],
+      },
+      {
+        path: 'departments/manage',
+        loadComponent: () =>
+          import('./admin/department-management.component').then(
+            (m) => m.DepartmentManagementComponent,
+          ),
+        canActivate: [teacherGuard],
+      },
+      {
         path: 'teacher/analytics',
         loadComponent: () =>
           import('./teacher-analytics/teacher-analytics.component').then(
@@ -73,6 +87,11 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'student/routes',
+        loadComponent: () =>
+          import('./student-routes/student-routes.component').then((m) => m.StudentRoutesComponent),
+      },
+      {
         path: 'teacher/schedules',
         loadComponent: () =>
           import('./teacher-schedule-management/teacher-schedule-management.component').then(
@@ -103,6 +122,18 @@ export const routes: Routes = [
         path: 'content',
         loadComponent: () =>
           import('./admin/content-management.component').then((m) => m.ContentManagementComponent),
+      },
+      {
+        path: 'routes',
+        loadComponent: () =>
+          import('./admin/route-management.component').then((m) => m.RouteManagementComponent),
+      },
+      {
+        path: 'departments',
+        loadComponent: () =>
+          import('./admin/department-management.component').then(
+            (m) => m.DepartmentManagementComponent,
+          ),
       },
       { path: '', redirectTo: 'users', pathMatch: 'full' },
     ],

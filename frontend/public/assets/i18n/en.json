@@ -44,7 +44,8 @@
     "QUIZ": "Quiz",
     "STATUS": "Status",
     "APPROVED": "Approved",
-    "DRAFT": "Draft"
+    "DRAFT": "Draft",
+    "BACK": "Back"
   },
   "DASHBOARD": {
     "WELCOME": "Welcome back",
@@ -67,7 +68,8 @@
     "DISCUSSION": "Discussion",
     "LIBRARY": "Library",
     "RESOURCES": "Resources",
-    "NO_COURSES": "You haven't enrolled in any courses yet."
+    "NO_COURSES": "You haven't enrolled in any courses yet.",
+    "PROGRESS": "Progress"
   },
   "AUTH": {
     "LOGIN": "Login",
@@ -124,7 +126,9 @@
     "OPEN_IN_NEW_TAB": "Open in new tab",
     "LESSON_PREPARING": "This lesson is currently being prepared by the teacher.",
     "CONTENT_LOCKED": "Content Locked",
-    "UNLOCK_MSG": "Please click the Start Course button above to unlock the lesson plan and quizzes."
+    "UNLOCK_MSG": "Please click the Start Course button above to unlock the lesson plan and quizzes.",
+    "TITLE_PLURAL": "Courses",
+    "START_COURSE": "Start course"
   },
   "QUIZ": {
     "CONGRATULATIONS": "Congratulations!",
@@ -277,5 +281,49 @@
     "CUSTOM_DOMAIN": "Custom Domain (Optional)",
     "IS_ACTIVE": "Is Active",
     "CONFIRM_REGISTER": "Confirm & Register"
+  },
+  "ROUTE": {
+    "TITLE": "Learning Routes",
+    "DESC": "Manage learning paths and assign courses",
+    "CREATE": "Create New Route",
+    "EDIT": "Edit Route",
+    "NAME": "Route Name",
+    "COURSES": "Courses in Route",
+    "ADD_COURSE": "Add Course to Route",
+    "NO_ROUTES": "No routes found. Start by creating one!",
+    "ASSIGNED_TO": "Assigned to",
+    "UNASSIGN": "Unassign",
+    "START_ROUTE": "Start Route"
+  },
+  "DEPARTMENT": {
+    "TITLE": "Departments",
+    "DESC": "Manage organizational structure and assign routes",
+    "CREATE": "Create New Department",
+    "EDIT": "Edit Department",
+    "NAME": "Department Name",
+    "PARENT": "Parent Department",
+    "SUB_DEPARTMENTS": "Sub-departments",
+    "ASSIGN_ROUTE": "Assign Route",
+    "ASSIGN_STUDENT": "Assign Student",
+    "NO_DEPARTMENTS": "No departments found. Start building the structure!",
+    "ASSIGNED_ROUTES": "Assigned Routes",
+    "ASSIGNED_STUDENTS": "Assigned Students",
+    "NO_ROUTES_ASSIGNED": "No routes assigned",
+    "NO_STUDENTS_ASSIGNED": "No students assigned",
+    "SELECT_DEPARTMENT": "Select a department to manage",
+    "ASSIGN_BTN": "+ Assign",
+    "STRUCTURE": "Structure",
+    "ADD_ROOT": "Add Root Department",
+    "NO_DESCRIPTION": "No description provided",
+    "ADD_SUB": "Add Sub-department",
+    "CONFIRM_DELETE": "Are you sure you want to delete this department?",
+    "DELETE_FAILED": "Failed to delete department.",
+    "CONFIRM_UNASSIGN_ROUTE": "Unassign this route?",
+    "CONFIRM_UNASSIGN_STUDENT": "Remove student from this department?",
+    "MODAL_TITLE_CREATE": "Create Department",
+    "MODAL_TITLE_EDIT": "Edit Department",
+    "MODAL_TITLE_ADD_SUB": "Add Sub-department to",
+    "MODAL_TITLE_ASSIGN_ROUTE": "Assign Route to",
+    "MODAL_TITLE_ASSIGN_STUDENT": "Assign Student to"
   }
 }

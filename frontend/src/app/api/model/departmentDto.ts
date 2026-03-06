@@ -9,15 +9,15 @@
  */
 import { ApplicationUserDepartmentId } from './applicationUserDepartmentId';
 import { ApiCoursesIdGetIdParameter } from './apiCoursesIdGetIdParameter';
-import { QuestionDto } from './questionDto';
+import { RouteDto } from './routeDto';
 
 
-export interface QuizDto { 
+export interface DepartmentDto { 
     id?: ApiCoursesIdGetIdParameter;
-    title?: string;
+    name?: string;
     description?: string | null;
-    timeLimitMinutes?: ApplicationUserDepartmentId | null;
-    numberOfQuestionsToServe?: ApplicationUserDepartmentId | null;
-    questions?: Array<QuestionDto>;
+    parentDepartmentId?: ApplicationUserDepartmentId | null;
+    subDepartments?: Array<DepartmentDto>;
+    assignedRoutes?: Array<RouteDto>;
 }
 

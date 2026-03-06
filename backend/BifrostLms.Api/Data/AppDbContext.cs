@@ -26,6 +26,10 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Question> Questions { get; set; }
     public DbSet<Choice> Choices { get; set; }
     public DbSet<QuizAttempt> QuizAttempts { get; set; }
+    public DbSet<Department> Departments { get; set; }
+    public DbSet<BifrostLms.Api.Core.Entities.Route> Routes { get; set; }
+    public DbSet<RouteCourse> RouteCourses { get; set; }
+    public DbSet<DepartmentRoute> DepartmentRoutes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,6 +45,26 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
 
         // Configure CourseTenant composite key
         modelBuilder.Entity<CourseTenant>().HasKey(ct => new { ct.CourseId, ct.TenantId });
+
+        // Configure RouteCourse composite key
+        modelBuilder.Entity<RouteCourse>().HasKey(rc => new { rc.RouteId, rc.CourseId });
+
+        // Configure DepartmentRoute composite key
+        modelBuilder.Entity<DepartmentRoute>().HasKey(dr => new { dr.DepartmentId, dr.RouteId });
+
+        // Configure Department Hierarchy
+        modelBuilder.Entity<Department>()
+            .HasOne(d => d.ParentDepartment)
+            .WithMany(d => d.SubDepartments)
+            .HasForeignKey(d => d.ParentDepartmentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configure User to Department relationship
+        modelBuilder.Entity<ApplicationUser>()
+            .HasOne(u => u.Department)
+            .WithMany(d => d.Students)
+            .HasForeignKey(u => u.DepartmentId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         // Global Query Filter for Multi-tenancy
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

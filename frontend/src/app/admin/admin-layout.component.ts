@@ -32,7 +32,7 @@ import { BASE_PATH } from '../api/variables';
               }
             </div>
             <div>
-              <h1 class="text-2xl font-black italic tracking-tight truncate max-w-[140px]">
+              <h1 class="text-2xl font-black italic tracking-tight truncate max-w-35">
                 {{ tenant()?.name || 'Bifrost LMS' }}
               </h1>
               <p class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-300">

@@ -8,14 +8,11 @@
  * Do not edit the class manually.
  */
 import { ApplicationUserDepartmentId } from './applicationUserDepartmentId';
-import { BatchUpdateQuestionDto } from './batchUpdateQuestionDto';
 
 
-export interface BatchUpdateQuizDto { 
-    title?: string;
+export interface CreateDepartmentDto { 
+    name?: string;
     description?: string | null;
-    timeLimitMinutes?: ApplicationUserDepartmentId | null;
-    numberOfQuestionsToServe?: ApplicationUserDepartmentId | null;
-    questions?: Array<BatchUpdateQuestionDto>;
+    parentDepartmentId?: ApplicationUserDepartmentId | null;
 }
 
